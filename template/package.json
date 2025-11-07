@@ -1,5 +1,4 @@
 {
-  "private": true,
   "scripts": {
     "dev": "wdwh dev",
     "build": "wdwh build"

@@ -8,6 +8,11 @@ import { relative } from "path"
 
 const cachePath = `./node_modules/.cache/wdwh`
 
+const bunfigText = `
+[serve.static]
+plugins = ["bun-plugin-tailwind"]
+env = "BUN_PUBLIC_*"`
+
 const files: Record<string, string> = {
   [`${cachePath}/frontend.tsx`]: `import { createRoot } from "react-dom/client"
 import "../../../src/app/index.css"
@@ -40,6 +45,39 @@ switch (process.argv.at(2)) {
 
 export async function dev() {
   await createFiles()
+
+  // Handle bunfig
+
+  const bunfigFile = Bun.file(`./bunfig.toml`)
+  if (await bunfigFile.exists()) {
+    let currentText = await bunfigFile.text()
+    if (!currentText.includes(`bun-plugin-tailwind`)) {
+      currentText += `${currentText === `` ? `` : `\n`}${bunfigText}`
+      bunfigFile.write(currentText)
+      Bun.spawn({
+        cmd: [`bun`, `dev`],
+        stdout: `inherit`,
+      })
+      return
+    }
+  } else {
+    bunfigFile.write(bunfigText)
+
+    async function deleteBunfig() {
+      const bunfigFile = Bun.file(`bunfig.toml`)
+      try {
+        if (await bunfigFile.exists()) await bunfigFile.delete()
+      } catch {}
+    }
+
+    process.on(`SIGINT`, deleteBunfig)
+    setTimeout(deleteBunfig, 500)
+    Bun.spawn({
+      cmd: [`bun`, `dev`],
+      stdout: `inherit`,
+    })
+    return
+  }
 
   // @ts-ignore
   await import(`../../.cache/wdwh/server.ts`)
@@ -194,10 +232,7 @@ async function getPropsFromIndexTSX() {
   const bodyEnd = body.lastIndexOf(`<`)
   body = body.replace(body.slice(bodyStart, bodyEnd), ``)
 
-  return {
-    headContent,
-    body,
-  }
+  return { headContent, body }
 }
 
 function getHtmlElement(text: string, name: string) {

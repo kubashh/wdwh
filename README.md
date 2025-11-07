@@ -39,7 +39,6 @@ https://github.com/kubashh/wdwh/tree/main/example
 - `src/app/App.tsx` (app entry point)
 - `src/app/react.svg` (favicon, can be any other image, bun path must be specify in `src/app/index.tsx`)
 - `src/app/index.css` (must contain `@import "tailwindcss";`)
-- `bunfig.toml` (for tailwindcss)
 - `package.json` (with scripts `dev` `build`)
 - `tsconfig.json` (for `typescript`)
 

@@ -1,3 +1,7 @@
+import { rmSync } from "fs"
+
+await Bun.$`bun build.ts`
+
 const file = Bun.file(`./package.json`)
 const text = await file.text()
 const start = text.indexOf(`"version"`) + 12
@@ -16,3 +20,6 @@ if (arr[1]) {
 } else {
   await Bun.$`bun publish`
 }
+
+// Cleaning
+rmSync(`dist`, { recursive: true })

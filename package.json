@@ -1,7 +1,8 @@
 {
   "name": "wdwh",
   "author": "kubashh",
-  "version": "1.5.2-dev.-1",
+  "version": "1.6.2",
+  "license": "MIT",
   "repository": "https://github.com/kubashh/wdwh.git",
   "description": "The Bun framework. Easyer web dev without html",
   "keywords": [
@@ -13,7 +14,6 @@
     "web",
     "html",
     "css",
-    "js",
     "ts"
   ],
   "files": [
@@ -23,11 +23,10 @@
     "index.d.ts"
   ],
   "scripts": {
-    "build": "bun build.ts",
     "deploy": "bun publish.ts"
   },
   "bin": {
-    "wdwh": "./src/main.ts"
+    "wdwh": "./dist/main.ts"
   },
   "dependencies": {
     "bun-plugin-tailwind": "latest",
@@ -36,12 +35,9 @@
     "tailwindcss": "latest"
   },
   "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
+    "@types/bun": "latest",
     "typescript": "latest"
   },
-  "license": "MIT",
   "prettier": {
     "semi": false,
     "printWidth": 108
