@@ -46,16 +46,6 @@ switch (process.argv.at(2)) {
 export async function dev() {
   await createFiles()
 
-  let subprocess: Bun.Subprocess
-
-  function killSubp() {
-    if (subprocess) subprocess.kill()
-  }
-
-  process.on(`SIGINT`, killSubp)
-  process.on(`SIGTERM`, killSubp)
-  process.on(`exit`, killSubp)
-
   // Handle bunfig
 
   const bunfigFile = Bun.file(`./bunfig.toml`)
@@ -64,10 +54,11 @@ export async function dev() {
     if (!currentText.includes(`bun-plugin-tailwind`)) {
       currentText += `${currentText === `` ? `` : `\n`}${bunfigText}`
       bunfigFile.write(currentText)
-      subprocess = Bun.spawn({
+      await Bun.spawn({
         cmd: [`wdwh`, `dev`],
         stdout: `inherit`,
-      })
+        stderr: `inherit`,
+      }).exited
     }
   } else {
     bunfigFile.write(bunfigText)
@@ -80,11 +71,12 @@ export async function dev() {
     }
 
     process.on(`SIGINT`, deleteBunfig)
-    setTimeout(deleteBunfig, 500)
-    subprocess = Bun.spawn({
+    setTimeout(deleteBunfig, 200)
+    await Bun.spawn({
       cmd: [`wdwh`, `dev`],
       stdout: `inherit`,
-    })
+      stderr: `inherit`,
+    }).exited
     return
   }
 
