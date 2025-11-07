@@ -2,7 +2,7 @@
 
 Works only with Bun runtime
 
-## Init new project
+## (Init new project)[https://www.npmjs.com/package/create-wdwh-app]
 
 ```sh
 bun create wdwh-app@latest .
@@ -13,7 +13,7 @@ bun create wdwh-app@latest .
 ### 1. Install `wdwh`
 
 ```sh
-bun i wdwh
+bun i -d wdwh
 ```
 
 ### 2. Add script `dev` `build` to `package.json`
