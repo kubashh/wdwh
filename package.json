@@ -1,10 +1,10 @@
 {
   "name": "wdwh",
+  "version": "1.6.5",
   "author": "kubashh",
-  "version": "1.6.5-dev.1",
-  "license": "MIT",
-  "repository": "https://github.com/kubashh/wdwh.git",
   "description": "The Bun framework. Easyer web dev without html",
+  "license": "MIT",
+  "repository": "https://github.com/kubashh/wdwh",
   "keywords": [
     "react",
     "bun",
