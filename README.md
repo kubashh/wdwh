@@ -20,12 +20,10 @@ bun i wdwh
 
 ```json
 {
-  "private": true,
   "scripts": {
     "dev": "wdwh dev",
     "build": "wdwh build"
   }
-  // ...
 }
 ```
 
@@ -33,7 +31,7 @@ bun i wdwh
 
 create file structure like example
 
-https://github.com/kubashh/wdwh/tree/main/example
+https://github.com/kubashh/create-wdwh-app/tree/main/template
 
 - `src/app/index.tsx` (contains only `html` `head` `body` tags and `metadata`)
 - `src/app/App.tsx` (app entry point)
