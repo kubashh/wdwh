@@ -1,6 +1,6 @@
 import { rmSync } from "fs"
 
-await Bun.$`bun build.ts`
+await build()
 
 const file = Bun.file(`./package.json`)
 const text = await file.text()
@@ -23,3 +23,13 @@ if (arr[1]) {
 
 // Cleaning
 rmSync(`dist`, { recursive: true })
+
+async function build() {
+  const text = (await Bun.file(`src/main.ts`).text())
+    .split(`\n`)
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith(`//`))
+    .join(`\n`)
+
+  await Bun.write(`dist/main.ts`, text)
+}

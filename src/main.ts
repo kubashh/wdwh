@@ -55,10 +55,11 @@ export async function dev() {
       currentText += `${currentText === `` ? `` : `\n`}${bunfigText}`
       bunfigFile.write(currentText)
       Bun.spawn({
-        cmd: [`bun`, `dev`],
+        cmd: [`wdwh`, `dev`],
         stdout: `inherit`,
       })
-      return
+      // @ts-ignore
+      process.suspend()
     }
   } else {
     bunfigFile.write(bunfigText)
@@ -73,7 +74,7 @@ export async function dev() {
     process.on(`SIGINT`, deleteBunfig)
     setTimeout(deleteBunfig, 500)
     Bun.spawn({
-      cmd: [`bun`, `dev`],
+      cmd: [`wdwh`, `dev`],
       stdout: `inherit`,
     })
     return
