@@ -54,11 +54,12 @@ export async function dev() {
     if (!currentText.includes(`bun-plugin-tailwind`)) {
       currentText += `${currentText === `` ? `` : `\n`}${bunfigText}`
       bunfigFile.write(currentText)
-      await Bun.spawn({
+      Bun.spawnSync({
         cmd: [`wdwh`, `dev`],
         stdout: `inherit`,
         stderr: `inherit`,
-      }).exited
+      })
+      return
     }
   } else {
     bunfigFile.write(bunfigText)
@@ -72,11 +73,11 @@ export async function dev() {
 
     process.on(`SIGINT`, deleteBunfig)
     setTimeout(deleteBunfig, 200)
-    await Bun.spawn({
+    Bun.spawnSync({
       cmd: [`wdwh`, `dev`],
       stdout: `inherit`,
       stderr: `inherit`,
-    }).exited
+    })
     return
   }
 
