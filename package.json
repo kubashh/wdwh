@@ -22,8 +22,7 @@
     "index.d.ts"
   ],
   "scripts": {
-    "build": "bun scripts/build.ts",
-    "publish": "bun scripts/publish.ts"
+    "build": "bun scripts/build.ts"
   },
   "bin": {
     "wdwh": "./dist/main.js"
