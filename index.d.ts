@@ -1,6 +1,8 @@
-type Config = {
+type WdwhConfig = {
   outdir: string
   bundleCss: boolean
+  hashFiles: boolean
+  external: string[]
 }
 
 type Metadata = {

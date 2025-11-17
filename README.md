@@ -27,11 +27,7 @@ bun i -d wdwh
 }
 ```
 
-### 3. Add files
-
-create file structure like example
-
-https://github.com/kubashh/create-wdwh-app/tree/main/template
+### 3. [Add files](https://github.com/kubashh/create-wdwh-app/tree/main/template)
 
 - `src/app/index.tsx` (contains only `html` `head` `body` tags and `metadata`)
 - `src/app/App.tsx` (app entry point)
@@ -39,8 +35,3 @@ https://github.com/kubashh/create-wdwh-app/tree/main/template
 - `src/app/index.css` (must contain `@import "tailwindcss";`)
 - `package.json` (with scripts `dev` `build`)
 - `tsconfig.json` (for `typescript`)
-
-#### Optional
-
-- `.gitignore` (optional)
-- `README.md` (optional)
