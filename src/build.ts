@@ -78,18 +78,17 @@ export async function build() {
   console.log(`\nOutput:
 ${outputTable}
 Done in ${buildTime}ms\n`)
+}
 
-  // Helper function
-  function minifyHtml(text: string) {
-    return text
-      .replaceAll(`\n`, ` `)
-      .replaceAll(/\s{2,}/g, ` `)
-      .replaceAll(/ > | >|> /g, `>`)
-      .replaceAll(/ < | <|< /g, `<`)
-      .replaceAll(/ ; | ;|; /g, `;`)
-      .replaceAll(/ { | {|{ /g, `{`)
-      .replaceAll(/ } | }|} /g, `}`)
-      .replaceAll(/ " | "|" /g, `"`)
-      .replaceAll(/ , | ,|, /g, `,`)
-  }
+function minifyHtml(text: string) {
+  return text
+    .replaceAll(`\n`, ` `)
+    .replaceAll(/\s{2,}/g, ` `)
+    .replaceAll(/ > | >|> /g, `>`)
+    .replaceAll(/ < | <|< /g, `<`)
+    .replaceAll(/ ; | ;|; /g, `;`)
+    .replaceAll(/ { | {|{ /g, `{`)
+    .replaceAll(/ } | }|} /g, `}`)
+    .replaceAll(/ " | "|" /g, `"`)
+    .replaceAll(/ , | ,|, /g, `,`)
 }

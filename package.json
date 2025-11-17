@@ -1,6 +1,6 @@
 {
   "name": "wdwh",
-  "version": "1.7.5-dev.1",
+  "version": "1.7.5-dev.2",
   "author": "kubashh",
   "description": "The Bun framework. Easyer web dev without html",
   "license": "MIT",
@@ -22,7 +22,8 @@
     "index.d.ts"
   ],
   "scripts": {
-    "build": "bun scripts/build.ts"
+    "build": "bun scripts/build.ts",
+    "publish": "bun scripts/publish.ts"
   },
   "bin": {
     "wdwh": "./dist/main.js"
