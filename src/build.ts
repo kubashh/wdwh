@@ -1,5 +1,5 @@
 import plugin from "bun-plugin-tailwind"
-import { rmSync } from "fs"
+import { existsSync, rmSync } from "fs"
 import { relative } from "path"
 import { cachePath } from "./consts"
 import { createFiles, readConfig } from "./util"
@@ -28,7 +28,8 @@ export async function build() {
       : undefined,
   }
 
-  rmSync(config.outdir, { recursive: true })
+  // Cleaning
+  if (config.cleanPrev && existsSync(config.outdir)) rmSync(config.outdir, { recursive: true })
 
   // Build all the HTML files
   const result = await Bun.build(buildConfig)

@@ -2,6 +2,7 @@ type WdwhConfig = {
   outdir: string
   bundleCss: boolean
   hashFiles: boolean
+  cleanPrev: boolean
   external: string[]
 }
 
