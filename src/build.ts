@@ -2,10 +2,10 @@ import plugin from "bun-plugin-tailwind"
 import { rmSync } from "fs"
 import { relative } from "path"
 import { cachePath } from "./consts"
-import { createFiles, readMetadata } from "./util"
+import { createFiles, readConfig } from "./util"
 
 export async function build() {
-  const { config } = await readMetadata()
+  const { config } = readConfig()
 
   await createFiles()
 
@@ -28,11 +28,7 @@ export async function build() {
       : undefined,
   }
 
-  console.log(`Building...`)
-
-  rmSync(config.outdir, { recursive: true, force: true })
-
-  const start = performance.now()
+  rmSync(config.outdir, { recursive: true })
 
   // Build all the HTML files
   const result = await Bun.build(buildConfig)
@@ -69,15 +65,12 @@ export async function build() {
   htmlFile.write(html)
 
   // Print the results
-  const buildTime = (performance.now() - start).toFixed(0)
-
   const outputTable = result.outputs.reduce(
-    (prev, output) => prev + `  ${relative(process.cwd(), output.path)}\n`,
+    (prev, out) => prev + `  ${relative(process.cwd(), out.path)}\n`,
     ``
   )
   console.log(`\nOutput:
-${outputTable}
-Done in ${buildTime}ms\n`)
+${outputTable}`)
 }
 
 function minifyHtml(text: string) {

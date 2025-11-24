@@ -1,7 +1,8 @@
+import { readFileSync } from "fs"
 import { cachePath, files } from "./consts"
 
-export async function readMetadata() {
-  const text = await Bun.file(`./src/app/index.tsx`).text()
+export function readConfig() {
+  const text = String(readFileSync(`./src/app/index.tsx`))
 
   const config = getOBjFromJsString(text, `export const config`) as WdwhConfig
 
@@ -39,7 +40,7 @@ function parseJsObjectString(str: string): any {
 }
 
 export async function createFiles() {
-  const { metadata } = await readMetadata()
+  const { metadata } = readConfig()
 
   for (const path in files) {
     await Bun.write(path, files[path] as any)
@@ -70,7 +71,7 @@ export async function createFiles() {
 }
 
 async function getPropsFromIndexTSX() {
-  const text = await Bun.file(`./src/app/index.tsx`).text()
+  const text = String(readFileSync(`./src/app/index.tsx`))
 
   const headContent = getHtmlElement(text, `head`).slice(6, -7)
   let body = getHtmlElement(text, `body`).replaceAll(`className`, `class`)
