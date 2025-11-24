@@ -1,6 +1,5 @@
 import plugin from "bun-plugin-tailwind"
 import { existsSync, rmSync } from "fs"
-import { relative } from "path"
 import { cachePath } from "./consts"
 import { createFiles, readConfig } from "./util"
 
@@ -66,12 +65,7 @@ export async function build() {
   htmlFile.write(html)
 
   // Print the results
-  const outputTable = result.outputs.reduce(
-    (prev, out) => prev + `  ${relative(process.cwd(), out.path)}\n`,
-    ``
-  )
-  console.log(`\nOutput:
-${outputTable}`)
+  console.log(`See "${config.outdir}"`)
 }
 
 function minifyHtml(text: string) {
