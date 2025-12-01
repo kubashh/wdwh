@@ -1,7 +1,6 @@
-import child_process from "child_process"
+import { FileSync, spawnSync } from "@kubashh/nutil"
 import { bunfigText } from "./consts"
 import { createFiles } from "./util"
-import { FileSync } from "@kubashh/nutil"
 
 export function dev() {
   createFiles()
@@ -32,8 +31,8 @@ export function dev() {
     cmd = `wdwh dev`
   }
 
-  const [a1, ...rest] = cmd.split(` `)
-  child_process.spawnSync(a1!, rest, {
+  spawnSync({
+    cmd: cmd.split(` `),
     stdio: `inherit`,
   })
 }
