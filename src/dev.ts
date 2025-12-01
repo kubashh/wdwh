@@ -1,16 +1,17 @@
 import child_process from "child_process"
 import { bunfigText } from "./consts"
 import { createFiles } from "./util"
+import { FileSync } from "@kubashh/nutil"
 
-export async function dev() {
-  await createFiles()
+export function dev() {
+  createFiles()
 
   // Handle bunfig
   let cmd = `bun node_modules/.cache/wdwh/server.ts`
 
-  const bunfigFile = Bun.file(`./bunfig.toml`)
-  if (await bunfigFile.exists()) {
-    let currentText = await bunfigFile.text()
+  const bunfigFile = FileSync(`./bunfig.toml`)
+  if (bunfigFile.exists()) {
+    let currentText = bunfigFile.text()
     if (!currentText.includes(`bun-plugin-tailwind`)) {
       currentText += `${currentText === `` ? `` : `\n`}${bunfigText}`
       bunfigFile.write(currentText)
@@ -19,10 +20,10 @@ export async function dev() {
   } else {
     bunfigFile.write(bunfigText)
 
-    async function deleteBunfig() {
-      const bunfigFile = Bun.file(`bunfig.toml`)
+    function deleteBunfig() {
+      const bunfigFile = FileSync(`bunfig.toml`)
       try {
-        if (await bunfigFile.exists()) await bunfigFile.delete()
+        if (bunfigFile.exists()) bunfigFile.delete()
       } catch {}
     }
 

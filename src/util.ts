@@ -1,8 +1,8 @@
-import { readFileSync } from "fs"
+import { FileSync } from "@kubashh/nutil"
 import { cachePath, files } from "./consts"
 
 export function readConfig() {
-  const text = String(readFileSync(`./src/app/index.tsx`))
+  const text = FileSync(`./src/app/index.tsx`).text()
 
   const config = getOBjFromJsString(text, `export const config`) as WdwhConfig
 
@@ -39,14 +39,14 @@ function parseJsObjectString(str: string): any {
   return JSON.parse(s)
 }
 
-export async function createFiles() {
+export function createFiles() {
   const { metadata } = readConfig()
 
   for (const path in files) {
-    await Bun.write(path, files[path] as any)
+    FileSync(path).write(files[path] as any)
   }
 
-  const { headContent, body } = await getPropsFromIndexTSX()
+  const { headContent, body } = getPropsFromIndexTSX()
 
   // write html
   const { title, iconPath, ...rest } = metadata
@@ -67,11 +67,11 @@ export async function createFiles() {
     `</html>`,
   ]
 
-  await Bun.write(`${cachePath}/index.html`, buf.join(`\n`))
+  FileSync(`${cachePath}/index.html`).write(buf.join(`\n`))
 }
 
-async function getPropsFromIndexTSX() {
-  const text = String(readFileSync(`./src/app/index.tsx`))
+function getPropsFromIndexTSX() {
+  const text = FileSync(`./src/app/index.tsx`).text()
 
   const headContent = getHtmlElement(text, `head`).slice(6, -7)
   let body = getHtmlElement(text, `body`).replaceAll(`className`, `class`)

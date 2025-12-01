@@ -5,7 +5,7 @@ import { build } from "./build"
 
 switch (process.argv.at(2)) {
   case `dev`:
-    await dev()
+    dev()
     break
   case `build`:
     await build()
