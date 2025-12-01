@@ -1,6 +1,6 @@
 {
   "name": "wdwh",
-  "version": "1.7.9",
+  "version": "1.7.10",
   "author": "kubashh",
   "description": "The Bun framework. Easyer web dev without html",
   "license": "MIT",
@@ -32,7 +32,8 @@
     "bun-plugin-tailwind": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "tailwindcss": "latest"
+    "tailwindcss": "latest",
+    "@types/react": "latest"
   },
   "devDependencies": {
     "@types/bun": "latest",
