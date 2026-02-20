@@ -1,6 +1,6 @@
 {
   "name": "wdwh",
-  "version": "1.10.2-dev.0",
+  "version": "1.11.1",
   "author": "kubashh",
   "description": "The Bun framework. Easyer web dev without html for static sites",
   "license": "MIT",
@@ -9,11 +9,11 @@
     "react",
     "bun",
     "wdwh",
-    "kubashh",
     "web",
     "html",
     "css",
-    "typescript"
+    "typescript",
+    "framework"
   ],
   "files": [
     "LICENSE",

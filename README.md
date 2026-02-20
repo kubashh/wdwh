@@ -5,7 +5,7 @@ Works only with Bun runtime
 ## Init project
 
 ```sh
-bunx wdwh@latest init .
+bunx wdwh@latest init
 ```
 
 ## Adding to project
@@ -27,7 +27,7 @@ bun i -d wdwh
 }
 ```
 
-### 3. [Add files](https://github.com/kubashh/create-wdwh-app/tree/main/template)
+### 3. [Add files](https://github.com/kubashh/wdwh/tree/main/template/template)
 
 - `src/app/index.tsx` (contains only `html` `head` `body` tags and `metadata`)
 - `src/app/App.tsx` (app entry point)
