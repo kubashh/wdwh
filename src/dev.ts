@@ -2,7 +2,7 @@ import { bunfigText } from "./consts"
 import { createFiles } from "./util"
 
 export async function dev() {
-  createFiles()
+  await createFiles()
 
   // Handle bunfig
 

@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "dev": "wdwh dev",
+    "build": "wdwh build"
+  },
+  "devDependencies": {
+    "@types/react": "latest",
+    "@types/bun": "latest",
+    "typescript": "latest",
+    "wdwh": "latest"
+  },
+  "prettier": {
+    "semi": false,
+    "printWidth": 108
+  }
+}

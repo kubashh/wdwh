@@ -6,7 +6,7 @@ import { createFiles, readConfig } from "./util"
 export async function build() {
   const { config } = await readConfig()
 
-  createFiles()
+  await createFiles()
 
   const buildConfig: Bun.BuildConfig = {
     entrypoints: [`${cachePath}/index.html`],
