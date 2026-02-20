@@ -1,10 +1,10 @@
 import plugin from "bun-plugin-tailwind"
-import { FileSync, fs } from "@kubashh/nutil"
+import fs from "fs"
 import { cachePath } from "./consts"
 import { createFiles, readConfig } from "./util"
 
 export async function build() {
-  const { config } = readConfig()
+  const { config } = await readConfig()
 
   createFiles()
 
@@ -34,14 +34,14 @@ export async function build() {
   const result = await Bun.build(buildConfig)
 
   // Minify html code
-  const htmlFile = FileSync(`${config.outdir}/index.html`)
-  let html = minifyHtml(htmlFile.text())
+  const htmlFile = Bun.file(`${config.outdir}/index.html`)
+  let html = minifyHtml(await htmlFile.text())
 
   // Bundle css into html
   if (config.bundleCss) {
     const cssArtefact = result.outputs.find((e) => e.path.endsWith(`.css`))
     if (cssArtefact?.path) {
-      const cssFile = FileSync(cssArtefact.path)
+      const cssFile = Bun.file(cssArtefact.path)
 
       const cssStart = html.indexOf(`<link rel="stylesheet"`)
 
@@ -54,15 +54,15 @@ export async function build() {
       }
 
       const slice = html.slice(cssStart, cssEnd)
-      const cssCode = `<style>${minifyHtml(cssFile.text())}</style>`
+      const cssCode = `<style>${minifyHtml(await cssFile.text())}</style>`
 
       html = html.replace(slice, cssCode)
-      cssFile.delete()
+      await cssFile.delete()
       result.outputs.splice(result.outputs.indexOf(cssArtefact), 1)
     }
   }
 
-  htmlFile.write(html)
+  await htmlFile.write(html)
 
   // Print the results
   console.log(`See "${config.outdir}"`)

@@ -1,4 +1,3 @@
-import { FileSync } from "@kubashh/nutil"
 import { bunfigText } from "./consts"
 import { createFiles } from "./util"
 
@@ -7,24 +6,24 @@ export async function dev() {
 
   // Handle bunfig
 
-  const bunfigFile = FileSync(`./bunfig.toml`)
-  if (bunfigFile.exists()) {
-    let currentText = bunfigFile.text()
+  const bunfigFile = Bun.file(`./bunfig.toml`)
+  if (await bunfigFile.exists()) {
+    let currentText = await bunfigFile.text()
     if (!currentText.includes(`bun-plugin-tailwind`)) {
       currentText += `${currentText === `` ? `` : `\n`}${bunfigText}`
-      bunfigFile.write(currentText)
+      await bunfigFile.write(currentText)
       try {
         await Bun.$`bunx wdwh dev`
       } catch {}
       process.exit()
     }
   } else {
-    bunfigFile.write(bunfigText)
+    await bunfigFile.write(bunfigText)
 
-    function deleteBunfig() {
-      const bunfigFile = FileSync(`bunfig.toml`)
+    async function deleteBunfig() {
+      const newBunfigFile = Bun.file(`bunfig.toml`)
       try {
-        if (bunfigFile.exists()) bunfigFile.delete()
+        if (await newBunfigFile.exists()) await newBunfigFile.delete()
       } catch {}
     }
 

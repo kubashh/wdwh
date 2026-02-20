@@ -2,10 +2,10 @@
 
 Works only with Bun runtime
 
-## (Init new project)[https://npmjs.com/package/create-wdwh-app]
+## Init project
 
 ```sh
-bun create wdwh-app@latest .
+bunx wdwh@latest init .
 ```
 
 ## Adding to project
