@@ -1,7 +1,0 @@
-try {
-  const packageJson = await Bun.file(`package.json`).json()
-  if (packageJson.version.includes(`dev`)) await Bun.$`bun publish --tag=dev`
-  else await Bun.$`bun publish`
-} catch (e) {
-  console.error(e)
-}

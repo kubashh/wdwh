@@ -1,11 +1,7 @@
-# Create wdwh (web development without html) app in one command
-
-## Usage
+# WDWH app usage
 
 ```bash
-bun create wdwh-app@latest [path] # "." for current directory
+bun update      # install and update deps
+bun dev         # development
+bun run build   # build project
 ```
-
-## Related
-
-[wdwh](https://npmjs.com/package/wdwh) - web development without html

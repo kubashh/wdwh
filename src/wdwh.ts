@@ -34,6 +34,8 @@ switch (process.argv[2]) {
       // Cleanup
       await Bun.file(zipPath).delete()
       rmSync(`./template`, { recursive: true })
+
+      console.log(`Run "bun i && bun dev" and start development!`)
     } else {
       console.log(`Cannot initialize wdwh project: folder is not empty. Use an empty directory.`)
       process.exit(1)
