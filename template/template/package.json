@@ -3,11 +3,18 @@
     "dev": "wdwh dev",
     "build": "wdwh build"
   },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "wdwh": "latest"
+  },
   "devDependencies": {
     "@types/react": "latest",
     "@types/bun": "latest",
-    "typescript": "latest",
-    "wdwh": "latest"
+    "bun-plugin-tailwind": "^0.1.2",
+    "tailwindcss": "^4.2.0",
+    "typescript": "latest"
   },
   "prettier": {
     "semi": false,

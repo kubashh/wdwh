@@ -1,5 +1,7 @@
 /node_modules
 /bun.lock
+/hooks.js
+/hooks.d.ts
 /signal.js
 /signal.d.ts
 /wdwh.js
