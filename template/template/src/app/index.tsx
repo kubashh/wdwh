@@ -3,11 +3,10 @@
 import App from "./App.tsx"
 
 export const config: WdwhConfig = {
-  outdir: `./dist`,
-  bundleCss: true,
-  hashFiles: true,
+  // outdir: `./dist`,
+  // hashFiles: true,
   cleanPrev: true,
-  external: [],
+  // external: [],
 }
 
 export const metadata: Metadata = {

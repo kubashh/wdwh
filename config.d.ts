@@ -1,6 +1,5 @@
 type WdwhConfig = {
-  outdir: string
-  bundleCss?: boolean
+  outdir?: string
   hashFiles?: boolean
   cleanPrev?: boolean
   external?: string[]

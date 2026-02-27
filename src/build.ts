@@ -1,12 +1,15 @@
 import plugin from "bun-plugin-tailwind"
 import fs from "fs"
 import { cachePath } from "./consts"
-import { createFiles, readConfig } from "./util"
+import { createFiles, detectEntries, readConfig } from "./util"
 
 export async function build() {
   const start = performance.now()
 
-  const { config } = await readConfig()
+  const entries = detectEntries()
+
+  const config = await readConfig()
+  if (!config.outdir) config.outdir = `dist`
 
   await createFiles()
 
@@ -17,16 +20,18 @@ export async function build() {
     minify: true,
     target: `browser`,
     sourcemap: `none`,
+    // compile: config.bundle === true,
+    external: config.external,
+    naming:
+      config.hashFiles === false
+        ? {
+            chunk: `[name].[ext]`,
+            asset: `[name].[ext]`,
+          }
+        : undefined,
     define: {
       "process.env.NODE_ENV": `"production"`,
     },
-    external: config.external,
-    naming: !config.hashFiles
-      ? {
-          chunk: `[name].[ext]`,
-          asset: `[name].[ext]`,
-        }
-      : undefined,
   }
 
   // Cleaning
@@ -40,7 +45,7 @@ export async function build() {
   let html = minifyHtml(await htmlFile.text())
 
   // Bundle css into html
-  if (config.bundleCss) {
+  if (entries.length === 1) {
     const cssArtefact = result.outputs.find((e) => e.path.endsWith(`.css`))
     if (cssArtefact?.path) {
       const cssFile = Bun.file(cssArtefact.path)

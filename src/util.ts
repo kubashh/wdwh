@@ -1,16 +1,5 @@
-import { cachePath, files } from "./consts"
-
-export async function readConfig() {
-  const text = await Bun.file(`./src/app/index.tsx`).text()
-
-  const config = getOBjFromJsString(text, `export const config`) as WdwhConfig
-
-  const metadata = getOBjFromJsString(text, `export const metadata`) as Metadata
-  if (metadata.iconPath && metadata.iconPath[0] === `.`)
-    metadata.iconPath = `../../../src/app${metadata.iconPath.slice(1)}`
-
-  return { config, metadata }
-}
+import path from "path"
+import { cachePath, files, mainPath } from "./consts"
 
 function getOBjFromJsString(text: string, id: string) {
   const i = text.indexOf(`{`, text.indexOf(id))
@@ -39,7 +28,7 @@ function parseJsObjectString(str: string): any {
 }
 
 export async function createFiles() {
-  const { metadata } = await readConfig()
+  const metadata = await readMetadata()
 
   for (const path in files) {
     await Bun.write(path, files[path]!)
@@ -69,8 +58,24 @@ export async function createFiles() {
   await Bun.write(`${cachePath}/index.html`, buf.join(`\n`))
 }
 
+async function readMetadata() {
+  const text = await Bun.file(mainPath).text()
+  const metadata = getOBjFromJsString(text, `export const metadata`) as Metadata
+  if (metadata.iconPath && metadata.iconPath[0] === `.`)
+    metadata.iconPath = path.join(`../../../src/app`, metadata.iconPath)
+
+  return metadata
+}
+
+export async function readConfig() {
+  const text = await Bun.file(mainPath).text()
+  const config = getOBjFromJsString(text, `export const config`) as WdwhConfig
+
+  return config
+}
+
 async function getPropsFromIndexTSX() {
-  const text = await Bun.file(`./src/app/index.tsx`).text()
+  const text = await Bun.file(mainPath).text()
 
   const headContent = getHtmlElement(text, `head`).slice(6, -7)
   let body = getHtmlElement(text, `body`).replaceAll(`className`, `class`)
@@ -93,4 +98,13 @@ function getHtmlElement(text: string, name: string) {
         .trim()
     }
   }
+}
+
+export function detectEntries() {
+  const glob = new Bun.Glob(`**/index.tsx`)
+  const entries = []
+  for (const path of glob.scanSync(`src/app`)) {
+    entries.push(path)
+  }
+  return entries
 }

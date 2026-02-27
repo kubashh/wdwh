@@ -17,6 +17,11 @@ if (process.argv.includes(`-i`)) {
 
 // Jobs
 Bun.spawnSync({
+  cmd: [`bun`, `run`, `build`],
+  stdio: [`inherit`, `inherit`, `inherit`],
+  cwd: `workspace`,
+})
+Bun.spawnSync({
   cmd: [`bun`, `dev`],
   stdio: [`inherit`, `inherit`, `inherit`],
   cwd: `workspace`,

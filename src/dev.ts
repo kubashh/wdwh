@@ -1,8 +1,10 @@
 import bunfigText from "./files/bunfig.txt" with { type: "text" }
-import { createFiles } from "./util"
+import { createFiles, detectEntries } from "./util"
 
 export async function dev() {
   await createFiles()
+
+  detectEntries() // TEST
 
   // Handle bunfig
 

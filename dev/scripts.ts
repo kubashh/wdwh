@@ -42,6 +42,6 @@ function buildWithBun(name: string) {
     outdir: `.`,
     target: `bun`,
     minify: true,
-    external: [`react`, `bun-plugin-tailwind`],
+    external: [`react`, `bun-plugin-tailwind`, `path`],
   })
 }

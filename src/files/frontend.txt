@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client"
-import "../../../src/app/index.css"
+import "../../../src/app/global.css"
 import App from "APP_PATH"
 
 createRoot(document.getElementsByTagName("body")[0]).render(<App />)
