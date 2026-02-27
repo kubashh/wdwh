@@ -1,8 +1,8 @@
-import index from "./index.html"
+import index from "./index.html";
 
 const { url } = Bun.serve({
   routes: { "/*": index },
   development: { hmr: true },
-})
+});
 
-process.send?.(`> Server running at ${url}`)
+process.send?.(`> Server running at ${url}`);

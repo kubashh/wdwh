@@ -1,40 +1,40 @@
-import bunfigText from "./files/bunfig.txt" with { type: "text" }
-import { createFiles, detectEntries } from "./util"
+import bunfigText from "./files/bunfig.txt" with { type: "text" };
+import { createFiles, detectEntries } from "./util";
 
 export async function dev() {
-  await createFiles()
+  const entries = detectEntries();
 
-  detectEntries() // TEST
+  await createFiles(entries);
 
   // Handle bunfig
 
-  const bunfigFile = Bun.file(`./bunfig.toml`)
+  const bunfigFile = Bun.file(`./bunfig.toml`);
   if (await bunfigFile.exists()) {
-    let currentText = await bunfigFile.text()
+    let currentText = await bunfigFile.text();
     if (!currentText.includes(`bun-plugin-tailwind`)) {
-      currentText += `${currentText === `` ? `` : `\n`}${bunfigText}`
-      await bunfigFile.write(currentText)
+      currentText += `${currentText === `` ? `` : `\n`}${bunfigText}`;
+      await bunfigFile.write(currentText);
       try {
-        await Bun.$`bunx wdwh dev`
+        await Bun.$`bunx wdwh dev`;
       } catch {}
-      process.exit()
+      process.exit();
     }
   } else {
-    await bunfigFile.write(bunfigText)
+    await bunfigFile.write(bunfigText);
 
     async function deleteBunfig() {
-      const newBunfigFile = Bun.file(`bunfig.toml`)
+      const newBunfigFile = Bun.file(`bunfig.toml`);
       try {
-        if (await newBunfigFile.exists()) await newBunfigFile.delete()
+        if (await newBunfigFile.exists()) await newBunfigFile.delete();
       } catch {}
     }
 
-    process.on(`SIGINT`, deleteBunfig)
-    setTimeout(deleteBunfig, 250)
+    process.on(`SIGINT`, deleteBunfig);
+    setTimeout(deleteBunfig, 250);
     try {
-      await Bun.$`bunx wdwh dev`
+      await Bun.$`bunx wdwh dev`;
     } catch {}
-    process.exit()
+    process.exit();
   }
 
   // Need be spawn (no spawnSync) because of ipc
@@ -45,10 +45,10 @@ export async function dev() {
     ipc:
       // Handles messages from the child, print port
       (message: { text?: string }) => {
-        console.log(message)
+        console.log(message);
         // child.disconnect()
       },
-  })
+  });
 
-  await child.exited
+  await child.exited;
 }

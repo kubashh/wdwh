@@ -18,8 +18,13 @@
     "tailwindcss": "^4.2.0",
     "typescript": "latest"
   },
+  "wdwh": {
+    "outdir": "./dist",
+    "hashFiles": true,
+    "cleanPrev": true,
+    "external": []
+  },
   "prettier": {
-    "semi": false,
     "printWidth": 108
   }
 }

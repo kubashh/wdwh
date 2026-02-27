@@ -1,13 +1,13 @@
-import { signal } from "wdwh/signal"
+import { signal } from "wdwh/signal";
 
-const counter = signal(0)
+const counter = signal(0);
 
 function increment() {
-  counter.value++
+  counter.value++;
 }
 
 export default function App() {
-  counter.bind()
+  counter.bind();
 
   return (
     <main>
@@ -16,5 +16,5 @@ export default function App() {
         Increment
       </button>
     </main>
-  )
+  );
 }

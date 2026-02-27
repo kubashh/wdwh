@@ -32,6 +32,6 @@ bun i wdwh@latest
 - `src/app/index.tsx` (contains only `html` `head` `body` tags and `metadata`)
 - `src/app/App.tsx` (app entry point)
 - `src/app/react.svg` (favicon, can be any other image, bun path must be specify in `src/app/index.tsx`)
-- `src/app/index.css` (must contain `@import "tailwindcss";`)
+- `src/app/global.css` (must contain `@import "tailwindcss";`)
 - `package.json` (with scripts `dev` `build`)
 - `tsconfig.json` (for `typescript`)
