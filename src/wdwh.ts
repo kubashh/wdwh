@@ -32,7 +32,7 @@ switch (process.argv[2]) {
       cpSync(`./template/template`, `.`, { recursive: true })
 
       // Cleanup
-      await Bun.file(zipPath).delete()
+      rmSync(zipPath)
       rmSync(`./template`, { recursive: true })
 
       console.log(`Run "bun i && bun dev" and start development!`)
@@ -44,7 +44,15 @@ switch (process.argv[2]) {
     break
   }
   default: {
-    console.log(`wrong command: "${process.argv.at(2)}"\ntry "dev" | "build" | "init"`)
+    console.log(`Usage:
+wdwh dev
+wdwh build
+      --dir             # Print out dir
+      --time            # Print build time
+
+bunx wdwh@latest init   # Init new project in current directory
+
+wrong command: "${process.argv.at(2)}"`)
     process.exit(1)
   }
 }

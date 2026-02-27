@@ -19,3 +19,13 @@ export function useHover() {
     },
   ]
 }
+
+// export function useUrl<T>(key: string, defaultValue: T) {
+//   const [state, setState] = useState<T>()
+
+//   return [state]
+// }
+
+// function getFromUrl(key: string) {
+//   const url = window.
+// }

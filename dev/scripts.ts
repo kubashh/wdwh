@@ -20,11 +20,13 @@ if (process.argv[2] === `pub`) {
 }
 
 // Cleanup
-rmSync(`signal.js`)
-rmSync(`signal.d.ts`)
-rmSync(`hooks.js`)
-rmSync(`hooks.d.ts`)
-rmSync(`wdwh.js`)
+if (!process.argv.includes(`-s`)) {
+  rmSync(`signal.js`)
+  rmSync(`signal.d.ts`)
+  rmSync(`hooks.js`)
+  rmSync(`hooks.d.ts`)
+  rmSync(`wdwh.js`)
+}
 
 // Helper
 function buildWithDeclarations(name: string) {

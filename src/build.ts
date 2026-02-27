@@ -4,6 +4,8 @@ import { cachePath } from "./consts"
 import { createFiles, readConfig } from "./util"
 
 export async function build() {
+  const start = performance.now()
+
   const { config } = await readConfig()
 
   await createFiles()
@@ -65,7 +67,9 @@ export async function build() {
   await htmlFile.write(html)
 
   // Print the results
-  console.log(`See "${config.outdir}"`)
+  const end = performance.now()
+  if (process.argv.includes(`--dir`)) console.log(`See "${config.outdir}"`)
+  if (process.argv.includes(`--time`)) console.log(`Build in ${end - start}ms`)
 }
 
 function minifyHtml(text: string) {

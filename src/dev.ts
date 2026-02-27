@@ -1,4 +1,4 @@
-import { bunfigText } from "./consts"
+import bunfigText from "./files/bunfig.txt" with { type: "text" }
 import { createFiles } from "./util"
 
 export async function dev() {
@@ -35,5 +35,18 @@ export async function dev() {
     process.exit()
   }
 
-  await Bun.$`bun node_modules/.cache/wdwh/server.ts`
+  // Need be spawn (no spawnSync) because of ipc
+  const child = Bun.spawn({
+    cmd: [`bun`, `node_modules/.cache/wdwh/server.ts`],
+    stdout: "ignore", // discard normal output
+    stderr: "inherit", // show errors in your terminal
+    ipc:
+      // Handles messages from the child, print port
+      (message: { text?: string }) => {
+        console.log(message)
+        // child.disconnect()
+      },
+  })
+
+  await child.exited
 }

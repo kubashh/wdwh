@@ -1,5 +1,9 @@
+# Dependencies
 /node_modules
 /bun.lock
+
+# Dev
+/workspace
 /hooks.js
 /hooks.d.ts
 /signal.js

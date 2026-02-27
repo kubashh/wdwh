@@ -13,7 +13,7 @@ bunx wdwh@latest init
 ### 1. Install `wdwh`
 
 ```sh
-bun i -d wdwh
+bun i wdwh@latest
 ```
 
 ### 2. Add script `dev` `build` to `package.json`

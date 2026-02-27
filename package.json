@@ -1,19 +1,18 @@
 {
   "name": "wdwh",
-  "version": "1.12.1",
+  "version": "1.12.4",
   "author": "kubashh",
   "description": "The Bun framework. Easyer web dev without html for static sites",
   "license": "MIT",
-  "repository": "https://github.com/kubashh/wdwh",
+  "repository": "kubashh/wdwh",
   "keywords": [
     "react",
-    "bun",
+    "framework",
     "wdwh",
     "web",
-    "html",
-    "css",
+    "bun",
     "typescript",
-    "framework"
+    "frontend"
   ],
   "files": [
     "LICENSE",
@@ -26,6 +25,7 @@
     "signal.d.ts"
   ],
   "scripts": {
+    "dev": "bun dev/dev.ts",
     "build": "bun dev/scripts.ts",
     "pub": "bun dev/scripts.ts pub",
     "zip": "zip -r template/template.zip template/template"
@@ -33,12 +33,14 @@
   "bin": {
     "wdwh": "./wdwh.js"
   },
+  "dependencies": {
+    "bun-plugin-tailwind": "latest"
+  },
   "devDependencies": {
     "@types/bun": "^1.3.9",
     "@types/react": "^19.2.14",
     "tailwindcss": "^4.2.1",
     "typescript": "^5.9.3",
-    "bun-plugin-tailwind": "^0.1.2",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
