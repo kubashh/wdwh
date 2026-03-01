@@ -1,7 +1,7 @@
 import plugin from "bun-plugin-tailwind";
 import fs from "fs";
-import { cachePath } from "./consts";
-import { createFiles, detectEntries } from "./util";
+import { cachePath } from "../lib/consts";
+import { createFiles, detectEntries } from "../lib/util";
 
 export async function build() {
   const start = performance.now();
@@ -36,7 +36,12 @@ export async function build() {
   };
 
   // Cleaning
-  if (config.cleanPrev && fs.existsSync(config.outdir)) fs.rmSync(config.outdir, { recursive: true });
+  if (config.cleanPrev) {
+    fs.rmSync(config.outdir, {
+      recursive: true,
+      force: true,
+    });
+  }
 
   // Build all the HTML files
   const result = await Bun.build(buildConfig);

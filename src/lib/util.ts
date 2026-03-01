@@ -1,31 +1,6 @@
 import path from "path";
 import { cachePath, files, mainPath } from "./consts";
-
-function getOBjFromJsString(text: string, id: string) {
-  const i = text.indexOf(`{`, text.indexOf(id));
-  const j = text.indexOf(`}`, i) + 1;
-
-  return parseJsObjectString(text.slice(i, j));
-}
-
-function parseJsObjectString(str: string): any {
-  let s = str.trim();
-
-  // 1. Remove comments
-  s = s.replace(/\/\/.*$/gm, "");
-  s = s.replace(/\/\*[\s\S]*?\*\//g, "");
-
-  // 2. Delete trailing commas
-  s = s.replace(/,\s*([}\]])/g, "$1");
-
-  // 3. Add key quotes
-  s = s.replace(/([{,]\s*)([A-Za-z0-9_$]+)\s*:/g, '$1"$2":');
-
-  // 4. Change quotes to doubles
-  s = s.replace(/'|`/g, '"');
-
-  return JSON.parse(s);
-}
+import type { Metadata } from "../..";
 
 export async function createFiles(entries: Entry[]) {
   entries = entries; // TODO handle entries
@@ -63,11 +38,33 @@ export async function createFiles(entries: Entry[]) {
 
 async function readMetadata() {
   const text = await Bun.file(mainPath).text();
-  const metadata = getOBjFromJsString(text, `export const metadata`) as Metadata;
+  const metadata = getObjFromJsString(text, `export const metadata`) as Metadata;
   if (metadata.iconPath && metadata.iconPath[0] === `.`)
     metadata.iconPath = path.join(`../../../src/app`, metadata.iconPath);
 
   return metadata;
+}
+
+function getObjFromJsString(text: string, id: string) {
+  const i = text.indexOf(`{`, text.indexOf(id));
+  const j = text.indexOf(`}`, i) + 1;
+
+  let s = text.slice(i, j).trim();
+
+  // 1. Remove comments
+  s = s.replace(/\/\/.*$/gm, ``);
+  s = s.replace(/\/\*[\s\S]*?\*\//g, ``);
+
+  // 2. Delete trailing commas
+  s = s.replace(/,\s*([}\]])/g, `$1`);
+
+  // 3. Add key quotes
+  s = s.replace(/([{,]\s*)([A-Za-z0-9_$]+)\s*:/g, `$1"$2":`);
+
+  // 4. Change quotes to doubles
+  s = s.replace(/'|`/g, `"`);
+
+  return JSON.parse(s);
 }
 
 async function getPropsFromIndexTSX() {
@@ -103,9 +100,10 @@ export function detectEntries() {
   for (const relPath of glob.scanSync(`src/app`)) {
     entries.push({
       filePath: path.join(`src/app`, relPath),
-      tmpPath: path.join(),
-      htmlPath: path.join(),
-      iconPath: path.join(),
+      tmpPath: path.join(), // TODO
+      htmlPath: path.join(), // TODO
+      iconPath: path.join(), // TODO
+      urlPath: ``, // TODO
     });
   }
   return entries;

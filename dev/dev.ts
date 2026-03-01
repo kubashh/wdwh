@@ -15,12 +15,16 @@ if (process.argv.includes(`-i`)) {
   }
 }
 
-// Jobs
+// Test build
+console.log(`Test build`);
 Bun.spawnSync({
   cmd: [`bun`, `run`, `build`],
   stdio: [`inherit`, `inherit`, `inherit`],
   cwd: `workspace`,
 });
+
+// Test dev
+console.log(`\nTest dev`);
 Bun.spawnSync({
   cmd: [`bun`, `dev`],
   stdio: [`inherit`, `inherit`, `inherit`],

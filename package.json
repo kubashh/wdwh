@@ -1,13 +1,10 @@
 {
   "name": "wdwh",
-  "version": "1.12.6",
+  "version": "1.12.7",
   "author": "kubashh",
   "description": "The Bun framework. Easyer web dev without html for static sites",
   "license": "MIT",
-  "repository": {
-    "type": "github",
-    "url": "https://github.com/kubashh/wdwh"
-  },
+  "repository": "https://github.com/kubashh/wdwh",
   "keywords": [
     "react",
     "framework",

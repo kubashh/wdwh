@@ -1,5 +1,5 @@
-import bunfigText from "./files/bunfig.txt" with { type: "text" };
-import { createFiles, detectEntries } from "./util";
+import { bunfigText } from "./lib/consts";
+import { createFiles, detectEntries } from "./lib/util";
 
 export async function dev() {
   const entries = detectEntries();

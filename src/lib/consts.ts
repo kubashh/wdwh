@@ -1,5 +1,6 @@
 import frontendText from "./files/frontend.txt" with { type: "text" };
 import serverText from "./files/server.txt" with { type: "text" };
+import bunfigText from "./files/bunfig.txt" with { type: "text" };
 
 const appPath = `../../../src/app/App.tsx`;
 export const mainPath = `./src/app/index.tsx`;
@@ -10,3 +11,5 @@ export const files: Record<string, string> = {
   [`${cachePath}/frontend.tsx`]: frontendText.replace(`APP_PATH`, appPath),
   [`${cachePath}/server.ts`]: serverText,
 };
+
+export { bunfigText };

@@ -20,12 +20,21 @@ export function useHover() {
   ];
 }
 
-// export function useUrl<T>(key: string, defaultValue: T) {
-//   const [state, setState] = useState<T>();
+export function useSearchParam(key: string, defaultValue: string) {
+  const arr = useState(getSearchParam(key, defaultValue));
 
-//   return [state];
-// }
+  setSearchParam(key, arr[0]);
 
-// function getFromUrl(key: string) {
-//   const url = window.
-// }
+  return arr;
+}
+
+function getSearchParam(key: string, defaultValue: string) {
+  const params = new URLSearchParams(location.search);
+  return params.has(key) ? decodeURI(params.get(key)!) : defaultValue;
+}
+
+function setSearchParam(key: string, newValue: string) {
+  const params = new URLSearchParams(location.search);
+  params.set(key, newValue as string);
+  history.pushState(null, ``, `?${params.toString()}`);
+}

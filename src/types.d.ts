@@ -1,6 +1,7 @@
 type Entry = {
   filePath: string;
   htmlPath: string;
+  urlPath: string;
   tmpPath: string;
   iconPath: string;
 };

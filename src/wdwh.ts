@@ -1,8 +1,9 @@
 #!/usr/bin/env bun
 
-import { cpSync, readdirSync, rmSync } from "fs";
+import { cpSync, existsSync, rmSync } from "fs";
+import path from "path";
 import { dev } from "./dev";
-import { build } from "./build";
+import { build } from "./build/build";
 
 const zipPath = `./tmp.zip`;
 const url = "https://raw.githubusercontent.com/kubashh/wdwh/main/template/template.zip";
@@ -15,32 +16,37 @@ switch (process.argv[2]) {
     await build();
     break;
   case `init`: {
-    const files = readdirSync(`.`);
-
-    if (files.length === 0) {
-      // Get zipped template
-      const res = await fetch(url);
-      const buffer = await res.bytes();
-      await Bun.write(zipPath, buffer);
-
-      // Unpack zip
-      const cmd =
-        process.platform === `win32`
-          ? [`powershell`, `-Command`, `Expand-Archiv`, `-Path`, zipPath, `-DestinationPath`, `.`, `-Force`]
-          : [`unzip`, `-o`, zipPath, `-d`, `.`]; // Linux / macOS: use system unzip
-      Bun.spawnSync(cmd);
-      cpSync(`./template/template`, `.`, { recursive: true });
-
-      // Cleanup
-      rmSync(zipPath);
-      rmSync(`./template`, { recursive: true });
-
-      console.log(`Run "bun i && bun dev" and start development!`);
-    } else {
-      console.log(`Cannot initialize wdwh project: folder is not empty. Use an empty directory.`);
+    // Get zipped template
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.log(`feach error: ${res.status}`);
       process.exit(1);
     }
+    const buffer = await res.bytes();
+    await Bun.write(zipPath, buffer);
 
+    // Unpack zip
+    const cmd =
+      process.platform === `win32`
+        ? [`powershell`, `-Command`, `Expand-Archiv`, `-Path`, zipPath, `-DestinationPath`, `.`, `-Force`]
+        : [`unzip`, `-o`, zipPath, `-d`, `.`]; // Linux / macOS: use system unzip
+    Bun.spawnSync(cmd);
+
+    // Copy in not exist
+    const glob = new Bun.Glob(`**/*`);
+    for (const relPath of glob.scanSync(`template/template`)) {
+      if (!existsSync(relPath)) {
+        cpSync(path.join(`template/template`, relPath), relPath);
+        console.log(`+ ${relPath}`);
+      }
+    }
+    cpSync(`./template/template`, `.`, { recursive: true });
+
+    // Cleanup
+    rmSync(zipPath);
+    rmSync(`./template`, { recursive: true });
+
+    console.log(`\nRun "bun i && bun dev" and start development!`);
     break;
   }
   default: {
