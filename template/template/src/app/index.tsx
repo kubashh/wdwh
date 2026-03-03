@@ -1,15 +1,12 @@
-import { type Metadata } from "wdwh";
-import App from "./App.tsx";
-
-export const metadata: Metadata = {
-  iconPath: `./react.svg`,
-  title: `Example`,
-};
+import App from "./App";
 
 export default function Page() {
   return (
     <html>
-      <head></head>
+      <head>
+        <link rel="icon" href="./react.svg" />
+        <title>Stativ Example</title>
+      </head>
       <body className="bg-black text-white">
         <App />
       </body>

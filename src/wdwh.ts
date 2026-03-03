@@ -46,7 +46,10 @@ switch (process.argv[2]) {
     rmSync(zipPath);
     rmSync(`./template`, { recursive: true });
 
-    console.log(`\nRun "bun i && bun dev" and start development!`);
+    console.log(`Installing dependencies...`);
+    await Bun.$`bun update`;
+
+    console.log(`\nRun "bun dev" and start development!`);
     break;
   }
   default: {

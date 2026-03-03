@@ -8,16 +8,15 @@ export async function dev() {
 
   // Handle bunfig
 
+  // TODO fix bunfig existence
+
   const bunfigFile = Bun.file(`./bunfig.toml`);
   if (await bunfigFile.exists()) {
     let currentText = await bunfigFile.text();
     if (!currentText.includes(`bun-plugin-tailwind`)) {
       currentText += `${currentText === `` ? `` : `\n`}${bunfigText}`;
       await bunfigFile.write(currentText);
-      try {
-        await Bun.$`bunx wdwh dev`;
-      } catch {}
-      process.exit();
+      await respawnIgnoreExit();
     }
   } else {
     await bunfigFile.write(bunfigText);
@@ -31,17 +30,13 @@ export async function dev() {
 
     process.on(`SIGINT`, deleteBunfig);
     setTimeout(deleteBunfig, 250);
-    try {
-      await Bun.$`bunx wdwh dev`;
-    } catch {}
-    process.exit();
+    await respawnIgnoreExit();
   }
 
   // Need be spawn (no spawnSync) because of ipc
   const child = Bun.spawn({
     cmd: [`bun`, `node_modules/.cache/wdwh/server.ts`],
-    stdout: "ignore", // discard normal output
-    stderr: "inherit", // show errors in your terminal
+    stdio: [`ignore`, `ignore`, `inherit`],
     ipc:
       // Handles messages from the child, print port
       (message: { text?: string }) => {
@@ -51,4 +46,11 @@ export async function dev() {
   });
 
   await child.exited;
+}
+
+async function respawnIgnoreExit() {
+  try {
+    await Bun.$`bunx wdwh dev`;
+  } catch {}
+  process.exit();
 }

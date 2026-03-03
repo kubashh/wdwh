@@ -1,76 +1,54 @@
 import path from "path";
-import { cachePath, files, mainPath } from "./consts";
-import type { Metadata } from "../..";
+import { cachePath, files } from "./consts";
 
 export async function createFiles(entries: Entry[]) {
-  entries = entries; // TODO handle entries
-  // for (const path of entries) {
-  const metadata = await readMetadata();
+  // generate cache files for each detected entry
+  for (const entry of entries) {
+    for (const path in files) {
+      await Bun.write(path, files[path]!);
+    }
 
-  for (const path in files) {
-    await Bun.write(path, files[path]!);
+    const { headContent, body } = await getPropsFromIndexTSX(entry);
+
+    const outPath = path.join(cachePath, entry.urlPath, `index.html`);
+    const buf = [
+      `<!DOCTYPE html>`,
+      `<html lang="en">`,
+      `<head>`,
+      `<meta charset="UTF-8" />`,
+      `<meta name="viewport" content="width=device-width, initial-scale=1.0" />`,
+      // if page author included title/meta/link tags they will appear here
+      headContent,
+      `<script src="./frontend.tsx"></script>`,
+      `</head>`,
+      body,
+      `</html>`,
+    ];
+
+    await Bun.write(outPath, buf.join(`\n`));
+  }
+}
+
+async function getPropsFromIndexTSX(entry: Entry) {
+  const text = await Bun.file(entry.tsxPath).text();
+
+  let headContent = getHtmlElement(text, `head`).slice(6, -7);
+
+  const iconSubpath = headContent.match(/<link\s+rel=["']icon["']\s+href=["']([^"']+)["']\s*\/?>/)?.at(1);
+  if (iconSubpath) {
+    let iconPath = path.join(
+      `../`.repeat(entry.urlPath.split(`/`).length + 2),
+      `src/app`,
+      entry.urlPath,
+      iconSubpath,
+    );
+
+    headContent = headContent.replace(
+      /<link\s+rel=["']icon["']\s+href=["'][^"']+["']\s*\/?>/,
+      `<link rel="icon" href="${iconPath}" />`,
+    );
   }
 
-  const { headContent, body } = await getPropsFromIndexTSX();
-
-  // write html
-  const { title, iconPath, ...rest } = metadata;
-
-  const buf = [
-    `<!DOCTYPE html>`,
-    `<html lang="en">`,
-    `<head>`,
-    `<meta charset="UTF-8" />`,
-    `<meta name="viewport" content="width=device-width, initial-scale=1.0" />`,
-    headContent,
-    ...Object.keys(rest).map((key) => `<meta name="${key}" content="${rest[key]}" />`),
-    `<link rel="icon" href="${iconPath}" />`,
-    `<title>${title}</title>`,
-    `<script src="./frontend.tsx"></script>`,
-    `</head>`,
-    body,
-    `</html>`,
-  ];
-
-  await Bun.write(`${cachePath}/index.html`, buf.join(`\n`));
-  // }
-}
-
-async function readMetadata() {
-  const text = await Bun.file(mainPath).text();
-  const metadata = getObjFromJsString(text, `export const metadata`) as Metadata;
-  if (metadata.iconPath && metadata.iconPath[0] === `.`)
-    metadata.iconPath = path.join(`../../../src/app`, metadata.iconPath);
-
-  return metadata;
-}
-
-function getObjFromJsString(text: string, id: string) {
-  const i = text.indexOf(`{`, text.indexOf(id));
-  const j = text.indexOf(`}`, i) + 1;
-
-  let s = text.slice(i, j).trim();
-
-  // 1. Remove comments
-  s = s.replace(/\/\/.*$/gm, ``);
-  s = s.replace(/\/\*[\s\S]*?\*\//g, ``);
-
-  // 2. Delete trailing commas
-  s = s.replace(/,\s*([}\]])/g, `$1`);
-
-  // 3. Add key quotes
-  s = s.replace(/([{,]\s*)([A-Za-z0-9_$]+)\s*:/g, `$1"$2":`);
-
-  // 4. Change quotes to doubles
-  s = s.replace(/'|`/g, `"`);
-
-  return JSON.parse(s);
-}
-
-async function getPropsFromIndexTSX() {
-  const text = await Bun.file(mainPath).text();
-
-  const headContent = getHtmlElement(text, `head`).slice(6, -7);
   let body = getHtmlElement(text, `body`).replaceAll(`className`, `class`);
 
   const bodyStart = body.indexOf(`>`) + 1;
@@ -94,16 +72,15 @@ function getHtmlElement(text: string, name: string) {
 }
 
 // TODO handle entries
-export function detectEntries() {
+export function detectEntries(): Entry[] {
   const glob = new Bun.Glob(`**/index.tsx`);
   const entries: Entry[] = [];
   for (const relPath of glob.scanSync(`src/app`)) {
+    const tsxPath = path.join(`src/app`, relPath);
+    const urlPath = relPath.replace(/index\.tsx$/, ``).replace(/\\/g, `/`);
     entries.push({
-      filePath: path.join(`src/app`, relPath),
-      tmpPath: path.join(), // TODO
-      htmlPath: path.join(), // TODO
-      iconPath: path.join(), // TODO
-      urlPath: ``, // TODO
+      tsxPath,
+      urlPath,
     });
   }
   return entries;

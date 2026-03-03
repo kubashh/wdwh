@@ -1,16 +1,34 @@
-import { signal } from "wdwh/signal";
+import { createSignal, useSignal } from "wdwh/signal";
 import { useSearchParam } from "wdwh/hooks";
 
 // See wdwh/hooks, wdwh/signal
 
-const counter = signal(0);
+// global signal. use with useSignal(signal)
+const countSignal = createSignal(0);
 
+// global function
 function increment() {
-  counter.value++;
+  countSignal.set(countSignal.get() + 1);
+}
+
+function Counter() {
+  const count = useSignal(countSignal);
+
+  return (
+    <div className="flex gap-8">
+      <p>Counter: {count}</p>
+      <button className="cursor-pointer" onClick={increment}>
+        Increment
+      </button>
+      <button className="cursor-pointer" onClick={() => countSignal.set(0)}>
+        Reset
+      </button>
+    </div>
+  );
 }
 
 export default function App() {
-  counter.bind();
+  const count = useSignal(countSignal);
   const [url, setUrl] = useSearchParam(`test`, `Starting value`);
 
   return (
@@ -29,10 +47,9 @@ export default function App() {
 
       <div>
         <h2 className="mb-4 text-xl">Test signal (wdwh/signal)</h2>
-        <p>Counter: {counter.value}</p>
-        <button className="cursor-pointer" onClick={increment}>
-          Increment
-        </button>
+        <div>Count: {count}</div>
+        <Counter />
+        <Counter />
       </div>
     </main>
   );

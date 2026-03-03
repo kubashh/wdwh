@@ -1,18 +1,16 @@
-import { cpSync, renameSync, rmSync } from "fs";
+import { cpSync, renameSync } from "fs";
 
 const files = [`wdwh.js`, `signal.js`, `signal.d.ts`, `hooks.js`, `hooks.d.ts`];
 
 // Setup
-if (process.argv.includes(`-i`)) {
-  cpSync(`template/template`, `workspace`, { recursive: true });
-  Bun.spawnSync({
-    cmd: [`bun`, `i`],
-    cwd: `workspace`,
-  });
-  await Bun.$`bun run build -s`;
-  for (const file of files) {
-    renameSync(file, `workspace/node_modules/wdwh/${file}`);
-  }
+cpSync(`template/template`, `workspace`, { recursive: true, force: true });
+Bun.spawnSync({
+  cmd: [`bun`, `i`],
+  cwd: `workspace`,
+});
+await Bun.$`bun run build -s`;
+for (const file of files) {
+  renameSync(file, `workspace/node_modules/wdwh/${file}`);
 }
 
 // Test build
@@ -32,4 +30,4 @@ Bun.spawnSync({
 });
 
 // Cleanup
-rmSync(`workspace`, { recursive: true });
+// rmSync(`workspace`, { recursive: true });
