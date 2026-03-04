@@ -12,6 +12,7 @@ export async function dev() {
 
   const bunfigFile = Bun.file(`./bunfig.toml`);
   if (await bunfigFile.exists()) {
+    // console.log(`Creating bunfig...`);
     let currentText = await bunfigFile.text();
     if (!currentText.includes(`bun-plugin-tailwind`)) {
       currentText += `${currentText === `` ? `` : `\n`}${bunfigText}`;
@@ -19,6 +20,7 @@ export async function dev() {
       await respawnIgnoreExit();
     }
   } else {
+    // console.log(`Deleting bunfig...`);
     await bunfigFile.write(bunfigText);
 
     async function deleteBunfig() {
@@ -32,20 +34,34 @@ export async function dev() {
     setTimeout(deleteBunfig, 250);
     await respawnIgnoreExit();
   }
+  // console.log(`Exists of bunfig...`);
+
+  // function onExit() {
+  //   console.log(`Exit`);
+  // }
+
+  // // process.on(`beforeExit`, onExit);
+  // // process.on(`exit`, onExit);
+  // // process.on(`SIGTERM`, onExit);
+  // process.on(`SIGINT`, onExit);
 
   // Need be spawn (no spawnSync) because of ipc
-  const child = Bun.spawn({
-    cmd: [`bun`, `node_modules/.cache/wdwh/server.ts`],
-    stdio: [`ignore`, `ignore`, `inherit`],
-    ipc:
-      // Handles messages from the child, print port
-      (message: { text?: string }) => {
-        console.log(message);
-        // child.disconnect()
-      },
-  });
+  try {
+    const child = Bun.spawn({
+      cmd: [`bun`, `node_modules/.cache/wdwh/server.ts`],
+      stdio: [`ignore`, `ignore`, `pipe`],
+      ipc:
+        // Handles messages from the child, print port
+        (message: { text?: string }) => {
+          console.log(message);
+          // child.disconnect()
+        },
+    });
 
-  await child.exited;
+    await child.exited;
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 async function respawnIgnoreExit() {

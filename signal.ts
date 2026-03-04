@@ -6,26 +6,39 @@ export type Signal<T> = {
   get(): T;
   set(value: T): void;
   subscribe(listener: Listener): () => void;
+  use(): T;
 };
 
 export function createSignal<T>(initial: T): Signal<T> {
   let value = initial;
   const listeners = new Set<Listener>();
 
-  return {
-    get() {
-      return value;
-    },
+  function get() {
+    return value;
+  }
 
-    set(newValue: T) {
+  function subscribe(listener: Listener) {
+    listeners.add(listener);
+    return () => listeners.delete(listener);
+  }
+
+  return {
+    get,
+
+    set(newValueOrFn: T | ((prev: T) => T)) {
+      const newValue =
+        typeof newValueOrFn === "function" ? (newValueOrFn as (prev: T) => T)(value) : newValueOrFn;
+
       if (Object.is(value, newValue)) return;
+
       value = newValue;
       listeners.forEach((l) => l());
     },
 
-    subscribe(listener: Listener) {
-      listeners.add(listener);
-      return () => listeners.delete(listener);
+    subscribe,
+
+    use() {
+      return useSyncExternalStore(subscribe, get);
     },
   };
 }
