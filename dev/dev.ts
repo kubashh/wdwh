@@ -1,6 +1,6 @@
 import { cpSync, renameSync } from "fs";
 
-const files = [`wdwh.js`, `signal.js`, `signal.d.ts`, `hooks.js`, `hooks.d.ts`];
+const files = [`wdwh.js`, `signal.js`, `hooks.js`]; // `signal.d.ts`, `hooks.d.ts`
 
 // Setup
 cpSync(`template/template`, `workspace`, { recursive: true, force: true });
@@ -8,7 +8,7 @@ Bun.spawnSync({
   cmd: [`bun`, `i`],
   cwd: `workspace`,
 });
-await Bun.$`bun run build -s`;
+await Bun.$`bun run build --noTypes`;
 for (const file of files) {
   renameSync(file, `workspace/node_modules/wdwh/${file}`);
 }

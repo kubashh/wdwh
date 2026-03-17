@@ -1,9 +1,11 @@
 # TODO
 
-- static pages exporter (2.0.0)
-- useUrl hook
-- comptime function
-- make import path of `App.tsx` independent (See 1.13.0 below)
+- build: static pages exporter (2.0.0)
+- dev: multi page development
+- api wdwh/hooks: useUrl hook
+- build: comptime function
+- build: make import path of `App.tsx` independent (See 1.13.0 below)
+- runtime: inline signals & signals optymalizations
 
 `a idiot admires complexity, a genius adrimes simplicity`
 

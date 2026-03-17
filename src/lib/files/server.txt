@@ -1,8 +1,11 @@
 import index from "./index.html";
 
 const { url } = Bun.serve({
-  routes: { "/*": index },
+  routes: {
+    "/": index,
+    "/*": new Response(`Not found!`),
+  },
   development: { hmr: true },
 });
 
-process.send?.(`> Server running at ${url}`);
+console.log(`> Server running at ${url}`);

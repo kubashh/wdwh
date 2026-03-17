@@ -5,7 +5,8 @@ export default function Page() {
     <html>
       <head>
         <link rel="icon" href="./react.svg" />
-        <title>Stativ Example</title>
+        <title>Example</title>
+        <meta name="description" content="Example project created with wdwh framework" />
       </head>
       <body className="bg-black text-white">
         <App />

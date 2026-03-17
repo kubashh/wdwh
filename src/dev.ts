@@ -46,22 +46,10 @@ export async function dev() {
   // process.on(`SIGINT`, onExit);
 
   // Need be spawn (no spawnSync) because of ipc
-  try {
-    const child = Bun.spawn({
-      cmd: [`bun`, `node_modules/.cache/wdwh/server.ts`],
-      stdio: [`ignore`, `ignore`, `pipe`],
-      ipc:
-        // Handles messages from the child, print port
-        (message: { text?: string }) => {
-          console.log(message);
-          // child.disconnect()
-        },
-    });
-
-    await child.exited;
-  } catch (err) {
-    console.error(err);
-  }
+  Bun.spawnSync({
+    cmd: [`bun`, `node_modules/.cache/wdwh/server.ts`],
+    stdio: [`ignore`, `inherit`, `inherit`],
+  });
 }
 
 async function respawnIgnoreExit() {

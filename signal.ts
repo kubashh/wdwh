@@ -4,7 +4,7 @@ type Listener = () => void;
 
 export type Signal<T> = {
   get(): T;
-  set(value: T): void;
+  set(newValueOrFn: T | ((prev: T) => T)): void;
   subscribe(listener: Listener): () => void;
   use(): T;
 };
@@ -25,7 +25,7 @@ export function createSignal<T>(initial: T): Signal<T> {
   return {
     get,
 
-    set(newValueOrFn: T | ((prev: T) => T)) {
+    set(newValueOrFn) {
       const newValue =
         typeof newValueOrFn === "function" ? (newValueOrFn as (prev: T) => T)(value) : newValueOrFn;
 

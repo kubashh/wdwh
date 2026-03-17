@@ -1,15 +1,21 @@
 import { rmSync } from "fs";
 
+// Config
+// publish => emit types (is slow with ts 5.x)
+const isPublish = process.argv.includes(`--publish`);
+const emitTypes = isPublish || !process.argv.includes(`--noTypes`);
+const isClear = process.argv.includes(`--clear`);
+const rmOptions = { force: true };
+
 // Build
-const prom = [
+await Promise.all([
   buildWithBun(`src/wdwh.ts`),
   ...buildWithDeclarations(`signal.ts`),
   ...buildWithDeclarations(`hooks.ts`),
-];
-await Promise.all(prom);
+]);
 
 // Publish
-if (process.argv[2] === `pub`) {
+if (isPublish) {
   try {
     const packageJson = await Bun.file(`package.json`).json();
     if (packageJson.version.includes(`dev`)) await Bun.$`bun publish --tag=dev`;
@@ -20,11 +26,11 @@ if (process.argv[2] === `pub`) {
 }
 
 // Cleanup
-if (!process.argv.includes(`-s`)) {
+if (isClear) {
   rmSync(`signal.js`);
-  rmSync(`signal.d.ts`);
+  rmSync(`signal.d.ts`, rmOptions);
   rmSync(`hooks.js`);
-  rmSync(`hooks.d.ts`);
+  rmSync(`hooks.d.ts`, rmOptions);
   rmSync(`wdwh.js`);
 }
 
@@ -32,7 +38,7 @@ if (!process.argv.includes(`-s`)) {
 function buildWithDeclarations(name: string) {
   return [
     buildWithBun(name),
-    Bun.spawn([`tsc`, name, `--declaration`, `--emitDeclarationOnly`, `--outDir`, `.`]).exited,
+    emitTypes && Bun.spawn([`tsc`, name, `--declaration`, `--emitDeclarationOnly`, `--outDir`, `.`]).exited,
   ];
 }
 

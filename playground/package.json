@@ -1,0 +1,22 @@
+{
+  "name": "bun-react-template",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "bun src/serve.ts",
+    "build": "bun run build.ts"
+  },
+  "dependencies": {
+    "bun-plugin-tailwind": "^0.1.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tailwindcss": "^4.2.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@types/bun": "latest"
+  },
+  "prettier": {
+    "printWidth": 108
+  }
+}

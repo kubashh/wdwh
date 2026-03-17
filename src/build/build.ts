@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import plugin from "bun-plugin-tailwind";
-import { cachePath } from "../lib/consts";
+import { cachePath, defaultConfig } from "../lib/consts";
 import { createFiles, detectEntries } from "../lib/util";
 
 export async function build() {
@@ -11,8 +11,9 @@ export async function build() {
   const start = performance.now();
 
   const packageJson = await Bun.file(`package.json`).json();
-  const config: WdwhConfig = packageJson.wdwh || {};
-  if (!config.outdir) config.outdir = `dist`;
+
+  // Can assign to defaultConfig, because it is used only once
+  const config: Required<WdwhConfig> = Object.assign(defaultConfig, packageJson.wdwh);
 
   await createFiles(entries);
 
@@ -24,19 +25,16 @@ export async function build() {
   const buildConfig: Bun.BuildConfig = {
     entrypoints,
     outdir: config.outdir,
-    plugins: [plugin],
+    plugins: config.tailwind ? [plugin] : undefined,
     minify: true,
     target: `browser`,
-    sourcemap: `none`,
-    // compile: config.bundle === true,
     external: config.external,
-    naming:
-      config.hashFiles === false
-        ? {
-            chunk: `[name].[ext]`,
-            asset: `[name].[ext]`,
-          }
-        : undefined,
+    naming: !config.hashFiles
+      ? {
+          chunk: `[name].[ext]`,
+          asset: `[name].[ext]`,
+        }
+      : undefined,
     define: {
       "process.env.NODE_ENV": `"production"`,
     },
@@ -58,26 +56,13 @@ export async function build() {
     const htmlFile = Bun.file(path.join(config.outdir, entry.urlPath, `index.html`));
     let html = minifyHtml(await htmlFile.text());
 
-    // if only one page, bundle css inline (preserves old behaviour)
+    // Bundle css inline if only one page (css is needed for html first print)
     if (entries.length === 1) {
       const cssArtefact = result.outputs.find((e) => e.path.endsWith(`.css`));
       if (cssArtefact?.path) {
         const cssFile = Bun.file(cssArtefact.path);
 
-        const cssStart = html.indexOf(`<link rel="stylesheet"`);
-
-        let cssEnd = cssStart;
-        for (; cssEnd < html.length; cssEnd++) {
-          if ([`/>`, `">`].includes(html.slice(cssEnd, cssEnd + 2))) {
-            cssEnd += 2;
-            break;
-          }
-        }
-
-        const slice = html.slice(cssStart, cssEnd);
-        const cssCode = `<style>${minifyHtml(await cssFile.text())}</style>`;
-
-        html = html.replace(slice, cssCode);
+        html = await inlineCssIntoHtml(html, await cssFile.text());
         await cssFile.delete();
         result.outputs.splice(result.outputs.indexOf(cssArtefact), 1);
       }
@@ -90,6 +75,23 @@ export async function build() {
   const end = performance.now();
   if (process.argv.includes(`--dir`)) console.log(`See "${config.outdir}"`);
   if (process.argv.includes(`--time`)) console.log(`Build in ${end - start}ms`);
+}
+
+async function inlineCssIntoHtml(html: string, css: string) {
+  const cssStart = html.indexOf(`<link rel="stylesheet"`);
+
+  let cssEnd = cssStart;
+  for (; cssEnd < html.length; cssEnd++) {
+    if ([`/>`, `">`].includes(html.slice(cssEnd, cssEnd + 2))) {
+      cssEnd += 2;
+      break;
+    }
+  }
+
+  const slice = html.slice(cssStart, cssEnd);
+  const cssCode = `<style>${minifyHtml(css)}</style>`;
+
+  return html.replace(slice, cssCode);
 }
 
 function minifyHtml(text: string) {

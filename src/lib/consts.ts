@@ -12,13 +12,21 @@ export const files: Record<string, string> = {
 };
 
 // if AST works make types numbers instead of strings
-// export const Identifier = 0;
-// export const Number = 1;
-// export const String = 2;
-// export const Punctuator = 3;
-// export const Keyword = 4;
-// export const JSXStart = 5;
-// export const JSXEnd = 6;
-// export const JSXSelfclosed = 7;
+// export const TIdentifier = 0;
+// export const TNumber = 1;
+// export const TString = 2;
+// export const TPunctuator = 3;
+// export const TKeyword = 4;
+// export const TJSXStart = 5;
+// export const TJSXEnd = 6;
+// export const TJSXSelfclosed = 7;
+
+export const defaultConfig: Required<WdwhConfig> = {
+  outdir: `dist`,
+  hashFiles: true,
+  cleanPrev: false,
+  tailwind: true,
+  external: [],
+};
 
 export { bunfigText };

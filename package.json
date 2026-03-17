@@ -25,7 +25,7 @@
   "scripts": {
     "dev": "clear && bun dev/dev.ts",
     "build": "bun dev/scripts.ts",
-    "pub": "bun dev/scripts.ts pub",
+    "pub": "bun dev/scripts.ts --publish",
     "zip": "zip -r template/template.zip template/template"
   },
   "bin": {

@@ -5,9 +5,19 @@ type Entry = {
 };
 
 type WdwhConfig = {
+  /** Default: "./dist" */
   outdir?: string;
+
+  /** Default: true */
   hashFiles?: boolean;
+
+  /** Default: false */
   cleanPrev?: boolean;
+
+  /** Default: true */
+  tailwind?: boolean;
+
+  /** Default: [] */
   external?: string[];
 };
 
@@ -33,15 +43,20 @@ type ReactNode = {
   children: ASTNode[];
 };
 
+type TokenType =
+  | `Identifier`
+  | `Number`
+  | `String`
+  | `Punctuator`
+  | `Keyword`
+  | `JSXStart`
+  | `JSXEnd`
+  | `JSXSelfclosed`; // is needed?
+
+// <div> - JSXStart; </div> - JSXEnd
+// <div  - JSXStart;     /> - JSXEnd // but self-closed
+
 type Token = {
   value: string;
-  type:
-    | `Identifier`
-    | `Number`
-    | `String`
-    | `Punctuator`
-    | `Keyword`
-    | `JSXStart`
-    | `JSXEnd`
-    | `JSXSelfclosed`;
+  type: TokenType;
 };
