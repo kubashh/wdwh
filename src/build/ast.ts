@@ -6,7 +6,7 @@ export class AST {
   tokens: Token[] = [];
 
   static async ast(code: string) {
-    FromTSAST.from(code);
+    await FromTSAST.from(code);
   }
 
   constructor(source: string) {

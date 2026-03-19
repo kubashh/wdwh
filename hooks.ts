@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
+import type { Signal } from ".";
 
 export function useRefresh() {
   const f = useState(false)[1];
@@ -37,4 +38,8 @@ function setSearchParam(key: string, newValue: string) {
   const params = new URLSearchParams(location.search);
   params.set(key, newValue as string);
   history.pushState(null, ``, `?${params.toString()}`);
+}
+
+export function useSignal<T>(signal: Signal<T>): T {
+  return useSyncExternalStore(signal.subscribe, signal.get);
 }

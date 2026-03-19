@@ -36,7 +36,7 @@ async function getPropsFromIndexTSX(entry: Entry) {
 
   const iconSubpath = headContent.match(/<link\s+rel=["']icon["']\s+href=["']([^"']+)["']\s*\/?>/)?.at(1);
   if (iconSubpath) {
-    let iconPath = path.join(
+    const iconPath = path.join(
       `../`.repeat(entry.urlPath.split(`/`).length + 2),
       `src/app`,
       entry.urlPath,

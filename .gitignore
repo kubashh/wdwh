@@ -5,8 +5,8 @@ bun.lock
 # Dev
 dist
 /workspace
+/index.js
+/index.d.ts
 /hooks.js
 /hooks.d.ts
-/signal.js
-/signal.d.ts
 /wdwh.js

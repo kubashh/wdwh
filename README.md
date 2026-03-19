@@ -14,6 +14,25 @@ For development you need the Bun runtime.
 bunx wdwh@latest init
 ```
 
+## Usage
+
+```tsx
+import { createSignal } from "wdwh";
+
+const countSignal = createSignal(0);
+
+function Counter() {
+  const count = countSignal.use();
+
+  return (
+    <>
+      <h2>{count}</h2>
+      <button onClick={() => countSignal.set((prev) => prev + 1)}>Increment</button>
+    </>
+  );
+}
+```
+
 ## Adding to project
 
 ### 1. Install `wdwh`
@@ -37,8 +56,8 @@ bun i wdwh@latest
 
 - `src/app/index.tsx` and additional `src/app/` subfolders – **all**
   `index.tsx` files are treated as separate pages and will produce
-  `/dist/index.html`, `/dist/foo/index.html`, etc.
-- `src/app/App.tsx`
+  `/DIST_DIR/index.html`, `/DIST_DIR/foo/index.html`, etc.
+- `src/app/App.tsx` <!-- to remove in future -->
 - `src/app/react.svg` (favicon, can be any other image, bun path must be specify in `src/app/index.tsx`)
 - `src/app/global.css` (must contain `@import "tailwindcss";`)
 - `package.json` (with scripts `dev` `build`)
@@ -47,6 +66,8 @@ bun i wdwh@latest
 
 ### Optional helper utilities
 
-- You can use built‑in helpers such as `useUrl()` (client side hook that
-  returns the current path) and other future `comptime` helpers for compiling
-  data at build time. Extend them by editing `src/lib/*` or adding plugins.
+- `clsx` build in
+- `useSearchParam`
+
+<!-- - `useUrl` -->
+<!-- - `comptime` executes js in build -->

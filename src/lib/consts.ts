@@ -3,11 +3,12 @@ import serverText from "./files/server.txt" with { type: "text" };
 import bunfigText from "./files/bunfig.txt" with { type: "text" };
 
 const appPath = `../../../src/app/App.tsx`;
+const cssPath = `../../../src/app/global.css`;
 
 export const cachePath = `./node_modules/.cache/wdwh`;
 
 export const files: Record<string, string> = {
-  [`${cachePath}/frontend.tsx`]: frontendText.replace(`APP_PATH`, appPath),
+  [`${cachePath}/frontend.tsx`]: frontendText.replace(`CSS_PATH`, cssPath).replace(`APP_PATH`, appPath),
   [`${cachePath}/server.ts`]: serverText,
 };
 

@@ -43,6 +43,21 @@ export function createSignal<T>(initial: T): Signal<T> {
   };
 }
 
-export function useSignal<T>(signal: Signal<T>): T {
-  return useSyncExternalStore(signal.subscribe, signal.get);
+export type ClassValue = ClassArray | string | number | null | boolean | undefined;
+export type ClassArray = ClassValue[];
+
+export function clsx(...inputs: ClassValue[]) {
+  let str = ``;
+  for (const input of inputs) {
+    if (!input) continue;
+    if (typeof input === `string`) {
+      str && (str += ` `);
+      str += input;
+    } else if (Array.isArray(input)) {
+      str && (str += ` `);
+      str += clsx(str);
+    }
+  }
+
+  return str;
 }

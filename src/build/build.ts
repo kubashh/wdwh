@@ -49,24 +49,12 @@ export async function build() {
   }
 
   // Build all the HTML files
-  const result = await Bun.build(buildConfig);
+  await Bun.build(buildConfig);
 
   // Minify & adjust html for each entry
   for (const entry of entries) {
     const htmlFile = Bun.file(path.join(config.outdir, entry.urlPath, `index.html`));
-    let html = minifyHtml(await htmlFile.text());
-
-    // Bundle css inline if only one page (css is needed for html first print)
-    if (entries.length === 1) {
-      const cssArtefact = result.outputs.find((e) => e.path.endsWith(`.css`));
-      if (cssArtefact?.path) {
-        const cssFile = Bun.file(cssArtefact.path);
-
-        html = await inlineCssIntoHtml(html, await cssFile.text());
-        await cssFile.delete();
-        result.outputs.splice(result.outputs.indexOf(cssArtefact), 1);
-      }
-    }
+    const html = minifyHtml(await htmlFile.text());
 
     await htmlFile.write(html);
   }
@@ -75,23 +63,6 @@ export async function build() {
   const end = performance.now();
   if (process.argv.includes(`--dir`)) console.log(`See "${config.outdir}"`);
   if (process.argv.includes(`--time`)) console.log(`Build in ${end - start}ms`);
-}
-
-async function inlineCssIntoHtml(html: string, css: string) {
-  const cssStart = html.indexOf(`<link rel="stylesheet"`);
-
-  let cssEnd = cssStart;
-  for (; cssEnd < html.length; cssEnd++) {
-    if ([`/>`, `">`].includes(html.slice(cssEnd, cssEnd + 2))) {
-      cssEnd += 2;
-      break;
-    }
-  }
-
-  const slice = html.slice(cssStart, cssEnd);
-  const cssCode = `<style>${minifyHtml(css)}</style>`;
-
-  return html.replace(slice, cssCode);
 }
 
 function minifyHtml(text: string) {

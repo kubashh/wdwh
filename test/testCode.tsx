@@ -6,7 +6,9 @@ console.log(a, b);
 export default function Home() {
   return (
     <html>
-      <head></head>
+      <head>
+        <title>Example</title>
+      </head>
       <body></body>
     </html>
   );

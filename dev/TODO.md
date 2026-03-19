@@ -11,8 +11,14 @@
 
 ## Static page exporter
 
-/src/app/index.tsx => /dist/index.html
-/src/app/test/index.tsx => /dist/test/index.html or /dist/test.html
+| input                      | output                |
+| -------------------------- | --------------------- |
+| /src/app/index.tsx         | /dist/index.html      |
+| /src/app/test/index.tsx    | /dist/test.html       |
+| /src/app/test/3/index.tsx  | /dist/test/3.html     |
+|                            |                       |
+| /src/app/asset1.png        | /dist/asset1-hash.png |
+| /src/app/test/3/asset1.png | /dist/asset1-hash1    |
 
 - have same css => if multipage => no bundling
 

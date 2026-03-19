@@ -1,6 +1,6 @@
 import { cpSync, renameSync } from "fs";
 
-const files = [`wdwh.js`, `signal.js`, `hooks.js`]; // `signal.d.ts`, `hooks.d.ts`
+const files = [`wdwh.js`, `index.js`, `hooks.js`]; // `index.d.ts`, `hooks.d.ts`
 
 // Setup
 cpSync(`template/template`, `workspace`, { recursive: true, force: true });

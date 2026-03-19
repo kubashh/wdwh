@@ -1,7 +1,7 @@
-import { createSignal } from "wdwh/signal";
+import { createSignal } from "wdwh";
 import { useSearchParam } from "wdwh/hooks";
 
-// See wdwh/hooks, wdwh/signal
+// See wdwh, wdwh/hooks
 
 const countSignal = createSignal(0);
 // countSignal.use() is same that useSignal(countSignal)

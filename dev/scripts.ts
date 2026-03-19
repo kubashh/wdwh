@@ -4,13 +4,13 @@ import { rmSync } from "fs";
 // publish => emit types (is slow with ts 5.x)
 const isPublish = process.argv.includes(`--publish`);
 const emitTypes = isPublish || !process.argv.includes(`--noTypes`);
-const isClear = process.argv.includes(`--clear`);
+const isClear = isPublish || process.argv.includes(`--clear`);
 const rmOptions = { force: true };
 
 // Build
 await Promise.all([
   buildWithBun(`src/wdwh.ts`),
-  ...buildWithDeclarations(`signal.ts`),
+  ...buildWithDeclarations(`index.ts`),
   ...buildWithDeclarations(`hooks.ts`),
 ]);
 
@@ -27,8 +27,8 @@ if (isPublish) {
 
 // Cleanup
 if (isClear) {
-  rmSync(`signal.js`);
-  rmSync(`signal.d.ts`, rmOptions);
+  rmSync(`index.js`);
+  rmSync(`index.d.ts`, rmOptions);
   rmSync(`hooks.js`);
   rmSync(`hooks.d.ts`, rmOptions);
   rmSync(`wdwh.js`);

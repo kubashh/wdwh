@@ -27,13 +27,14 @@ if (existsSync(outdir)) {
 
 const start = performance.now();
 
-const entrypoints = [`./src/app/index.html`, `./src/app/test.html`];
+const entrypoints = [`./src/app/index.html`, `./src/app/test.html`, `./src/app/tt/tt.html`];
 
 const result = await Bun.build({
   entrypoints,
   outdir,
   plugins: [plugin],
   minify: true,
+  splitting: true,
   target: "browser",
   define: {
     "process.env.NODE_ENV": JSON.stringify("production"),
