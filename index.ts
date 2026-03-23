@@ -2,6 +2,14 @@ import { useSyncExternalStore } from "react";
 
 type Listener = () => void;
 
+export type Metadata = {
+  title: string;
+  iconPath: string;
+  description: string;
+  author?: string;
+  [key: string]: string | undefined;
+};
+
 export type Signal<T> = {
   get(): T;
   set(newValueOrFn: T | ((prev: T) => T)): void;

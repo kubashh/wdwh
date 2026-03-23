@@ -3,8 +3,9 @@ import { rmSync } from "fs";
 // Config
 // publish => emit types (is slow with ts 5.x)
 const isPublish = process.argv.includes(`--publish`);
-const emitTypes = isPublish || !process.argv.includes(`--noTypes`);
+const emitTypes = isPublish || process.argv.includes(`--types`);
 const isClear = isPublish || process.argv.includes(`--clear`);
+
 const rmOptions = { force: true };
 
 // Build
@@ -38,7 +39,9 @@ if (isClear) {
 function buildWithDeclarations(name: string) {
   return [
     buildWithBun(name),
-    emitTypes && Bun.spawn([`tsc`, name, `--declaration`, `--emitDeclarationOnly`, `--outDir`, `.`]).exited,
+    emitTypes &&
+      Bun.spawn([`tsc`, name, `--declaration`, `--emitDeclarationOnly`, `--outDir`, `.`, `--ignoreConfig`])
+        .exited,
   ];
 }
 

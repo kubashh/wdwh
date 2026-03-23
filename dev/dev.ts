@@ -4,11 +4,15 @@ const files = [`wdwh.js`, `index.js`, `hooks.js`]; // `index.d.ts`, `hooks.d.ts`
 
 // Setup
 cpSync(`template/template`, `workspace`, { recursive: true, force: true });
-Bun.spawnSync({
-  cmd: [`bun`, `i`],
-  cwd: `workspace`,
-});
-await Bun.$`bun run build --noTypes`;
+
+await Promise.all([
+  Bun.spawn({
+    cmd: [`bun`, `i`],
+    cwd: `workspace`,
+  }).exited,
+  Bun.$`bun run build`,
+]);
+
 for (const file of files) {
   renameSync(file, `workspace/node_modules/wdwh/${file}`);
 }
@@ -28,6 +32,3 @@ Bun.spawnSync({
   stdio: [`inherit`, `inherit`, `inherit`],
   cwd: `workspace`,
 });
-
-// Cleanup
-// rmSync(`workspace`, { recursive: true });

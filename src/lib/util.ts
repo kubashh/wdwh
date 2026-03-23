@@ -1,5 +1,6 @@
 import path from "path";
 import { cachePath, files } from "./consts";
+import type { Metadata } from "../..";
 
 export async function createFiles(entries: Entry[]) {
   // generate cache files for each detected entry
@@ -8,7 +9,15 @@ export async function createFiles(entries: Entry[]) {
       await Bun.write(path, files[path]!);
     }
 
-    const { headContent, body } = await getPropsFromIndexTSX(entry);
+    const body = await getBodyPropsFromIndexTSX(entry);
+    const { title, iconPath, ...rest } = await readMetadata(entry);
+
+    const iconRealPath = path.join(
+      `../`.repeat(entry.urlPath.split(`/`).length + 2),
+      `src/app`,
+      entry.urlPath,
+      iconPath,
+    );
 
     const outPath = path.join(cachePath, entry.urlPath, `index.html`);
     const buf = [
@@ -17,9 +26,11 @@ export async function createFiles(entries: Entry[]) {
       `<head>`,
       `<meta charset="UTF-8" />`,
       `<meta name="viewport" content="width=device-width, initial-scale=1.0" />`,
+      `<title>${title}</title>`,
+      `<link rel="icon" href="${iconRealPath}" />`,
       // if page author included title/meta/link tags they will appear here
-      headContent,
-      `<script src="./frontend.tsx"></script>`,
+      ...Object.entries(rest).map(([key, value]) => `<meta name="${key}" content="${value}" />`),
+      `<script src="${path.join(entry.urlPath, `./frontend.tsx`)}"></script>`,
       `</head>`,
       body,
       `</html>`,
@@ -29,25 +40,8 @@ export async function createFiles(entries: Entry[]) {
   }
 }
 
-async function getPropsFromIndexTSX(entry: Entry) {
+async function getBodyPropsFromIndexTSX(entry: Entry) {
   const text = await Bun.file(entry.tsxPath).text();
-
-  let headContent = getHtmlElement(text, `head`).slice(6, -7);
-
-  const iconSubpath = headContent.match(/<link\s+rel=["']icon["']\s+href=["']([^"']+)["']\s*\/?>/)?.at(1);
-  if (iconSubpath) {
-    const iconPath = path.join(
-      `../`.repeat(entry.urlPath.split(`/`).length + 2),
-      `src/app`,
-      entry.urlPath,
-      iconSubpath,
-    );
-
-    headContent = headContent.replace(
-      /<link\s+rel=["']icon["']\s+href=["'][^"']+["']\s*\/?>/,
-      `<link rel="icon" href="${iconPath}" />`,
-    );
-  }
 
   let body = getHtmlElement(text, `body`).replaceAll(`className`, `class`);
 
@@ -55,7 +49,7 @@ async function getPropsFromIndexTSX(entry: Entry) {
   const bodyEnd = body.lastIndexOf(`<`);
   body = body.replace(body.slice(bodyStart, bodyEnd), ``);
 
-  return { headContent, body };
+  return body;
 }
 
 function getHtmlElement(text: string, name: string) {
@@ -84,4 +78,32 @@ export function detectEntries(): Entry[] {
     });
   }
   return entries;
+}
+
+async function readMetadata(entry: Entry): Promise<Metadata> {
+  let text = await Bun.file(entry.tsxPath).text();
+  text = text
+    // Convert single quotes to double quotes
+    .replaceAll(/'|`/g, `"`)
+    // Add quotes around unquoted keys
+    .replaceAll(/([{,]\s*)([a-zA-Z0-9_]+)\s*:/g, `$1"$2":`)
+    // Temove trailing comma
+    .replace(/,\s*([}\]])/g, `$1`);
+
+  const start = text.indexOf(`{`, text.indexOf(`export const metadata`));
+  const end = text.indexOf(`}`, start) + 1;
+  text = text.slice(start, end);
+
+  const metadata = JSON.parse(text);
+
+  if (!metadata.title) error(`Matadata must contain "title"`);
+  if (!metadata.iconPath) error(`Matadata must contain "iconPath"`);
+  if (!metadata.description) error(`Matadata must contain "description"`);
+
+  return metadata;
+}
+
+function error(msg: string): never {
+  console.error(`Error:`, msg);
+  process.exit(1);
 }
