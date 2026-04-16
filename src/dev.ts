@@ -2,7 +2,7 @@ import { bunfigText } from "./lib/consts";
 import { createFiles, detectEntries } from "./lib/util";
 
 export async function dev() {
-  const entries = detectEntries();
+  const entries = await detectEntries();
 
   await createFiles(entries);
 

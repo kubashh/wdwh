@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createRoot } from "react-dom/client";
 import "CSS_PATH";
 import App from "APP_PATH";

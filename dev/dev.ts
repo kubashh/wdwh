@@ -3,7 +3,10 @@ import { cpSync, renameSync } from "fs";
 const files = [`wdwh.js`, `index.js`, `hooks.js`]; // `index.d.ts`, `hooks.d.ts`
 
 // Setup
-cpSync(`template/template`, `workspace`, { recursive: true, force: true });
+cpSync(`template/${process.argv.includes(`--template`) ? `template` : `test-template`}`, `workspace`, {
+  recursive: true,
+  force: true,
+});
 
 await Promise.all([
   Bun.spawn({

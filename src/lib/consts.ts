@@ -1,6 +1,8 @@
-import frontendText from "./files/frontend.txt" with { type: "text" };
-import serverText from "./files/server.txt" with { type: "text" };
-import bunfigText from "./files/bunfig.txt" with { type: "text" };
+// @ts-ignore
+import frontendText from "./files/frontend.tsx" with { type: "text" };
+// @ts-ignore
+import serverText from "./files/server.ts" with { type: "text" };
+import bunfigText from "./files/bunfig.toml" with { type: "text" };
 
 const appPath = `../../../src/app/App.tsx`;
 const cssPath = `../../../src/app/global.css`;

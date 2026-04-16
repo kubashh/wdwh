@@ -1,0 +1,26 @@
+{
+  "name": "example",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "wdwh dev",
+    "build": "wdwh build"
+  },
+  "dependencies": {
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "wdwh": "latest"
+  },
+  "devDependencies": {
+    "@types/react": "latest",
+    "@types/bun": "latest",
+    "bun-plugin-tailwind": "^0.1.2",
+    "tailwindcss": "^4.2.2",
+    "typescript": "latest"
+  },
+  "wdwh": {
+    "outdir": "./dist",
+    "hashFiles": true,
+    "cleanPrev": true,
+    "external": []
+  }
+}

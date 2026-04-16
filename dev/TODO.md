@@ -6,6 +6,7 @@
 - build: comptime function
 - build: make import path of `App.tsx` independent (See 1.13.0 below)
 - runtime: inline signals & signals optymalizations
+- hydrateRoot instead of create root
 
 `a idiot admires complexity, a genius adrimes simplicity`
 

@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { useConst } from "./hooks";
 
 type Listener = () => void;
 
@@ -7,6 +8,7 @@ export type Metadata = {
   iconPath: string;
   description: string;
   author?: string;
+  htmlLang?: string;
   [key: string]: string | undefined;
 };
 
@@ -17,8 +19,8 @@ export type Signal<T> = {
   use(): T;
 };
 
-export function createSignal<T>(initial: T): Signal<T> {
-  let value = initial;
+export function createSignal<T>(defaultValue: T): Signal<T> {
+  let value = defaultValue;
   const listeners = new Set<Listener>();
 
   function get() {
@@ -46,9 +48,13 @@ export function createSignal<T>(initial: T): Signal<T> {
     subscribe,
 
     use() {
-      return useSyncExternalStore(subscribe, get);
+      return useSyncExternalStore(subscribe, get, get);
     },
   };
+}
+
+export function useCreateSignal<T>(defaultValue: T): Signal<T> {
+  return useConst(createSignal(defaultValue));
 }
 
 export type ClassValue = ClassArray | string | number | null | boolean | undefined;

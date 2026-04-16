@@ -1,7 +1,11 @@
 // information about a single page entrypoint
 type Entry = {
   tsxPath: string; // path to src/app/.../index.tsx
-  urlPath: string; // URL segment ('' for root)
+  tsxText: string; // text of index.tsx
+  urlPath: string; // URL segment ("" for root)
+  htmlOutPath: string; // out path for index.html
+  frontendPath: string; // for frontend.tsx
+  // fileHash: string; // to implememt
 };
 
 type WdwhConfig = {

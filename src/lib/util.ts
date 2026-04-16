@@ -4,52 +4,57 @@ import type { Metadata } from "../..";
 
 export async function createFiles(entries: Entry[]) {
   // generate cache files for each detected entry
+  const promises: Promise<void>[] = [];
   for (const entry of entries) {
-    for (const path in files) {
-      await Bun.write(path, files[path]!);
-    }
-
-    const body = await getBodyPropsFromIndexTSX(entry);
-    const { title, iconPath, ...rest } = await readMetadata(entry);
-
-    const iconRealPath = path.join(
-      `../`.repeat(entry.urlPath.split(`/`).length + 2),
-      `src/app`,
-      entry.urlPath,
-      iconPath,
-    );
-
-    const outPath = path.join(cachePath, entry.urlPath, `index.html`);
-    const buf = [
-      `<!DOCTYPE html>`,
-      `<html lang="en">`,
-      `<head>`,
-      `<meta charset="UTF-8" />`,
-      `<meta name="viewport" content="width=device-width, initial-scale=1.0" />`,
-      `<title>${title}</title>`,
-      `<link rel="icon" href="${iconRealPath}" />`,
-      // if page author included title/meta/link tags they will appear here
-      ...Object.entries(rest).map(([key, value]) => `<meta name="${key}" content="${value}" />`),
-      `<script src="${path.join(entry.urlPath, `./frontend.tsx`)}"></script>`,
-      `</head>`,
-      body,
-      `</html>`,
-    ];
-
-    await Bun.write(outPath, buf.join(`\n`));
+    promises.push(createEntryFiles(entry));
   }
+  await Promise.all(promises);
 }
 
-async function getBodyPropsFromIndexTSX(entry: Entry) {
-  const text = await Bun.file(entry.tsxPath).text();
+async function createEntryFiles(entry: Entry) {
+  log(`Create entry:`, entry.urlPath); // TMP
+  for (const path in files) {
+    await Bun.write(path, files[path]!);
+  }
 
-  let body = getHtmlElement(text, `body`).replaceAll(`className`, `class`);
+  // index.html
+  log(`Creating index.html...`); // TMP
+  const body = getBodyPropsFromIndexTSX(entry);
+  const { title, iconPath, htmlLang, ...rest } = await readMetadata(entry);
+
+  const iconRealPath = path.join(
+    `../`.repeat(entry.urlPath.split(`/`).length + 2),
+    `src/app`,
+    entry.urlPath,
+    iconPath,
+  );
+
+  const buf = [
+    `<!DOCTYPE html>`,
+    `<html lang="${htmlLang || `en`}>`,
+    `<head>`,
+    `<meta charset="UTF-8" />`,
+    `<meta name="viewport" content="width=device-width, initial-scale=1.0" />`,
+    `<title>${title}</title>`,
+    `<link rel="icon" href="${iconRealPath}" />`,
+    // if page author included title/meta/link tags they will appear here
+    ...Object.entries(rest).map(([key, value]) => `<meta name="${key}" content="${value}" />`),
+    `<script src="${entry.frontendPath}"></script>`,
+    `</head>`,
+    body,
+    `</html>`,
+  ];
+
+  await Bun.write(entry.htmlOutPath, buf.join(`\n`));
+}
+
+function getBodyPropsFromIndexTSX(entry: Entry) {
+  const body = getHtmlElement(entry.tsxText, `body`).replaceAll(`className`, `class`);
 
   const bodyStart = body.indexOf(`>`) + 1;
   const bodyEnd = body.lastIndexOf(`<`);
-  body = body.replace(body.slice(bodyStart, bodyEnd), ``);
 
-  return body;
+  return body.replace(body.slice(bodyStart, bodyEnd), ``);
 }
 
 function getHtmlElement(text: string, name: string) {
@@ -66,23 +71,27 @@ function getHtmlElement(text: string, name: string) {
 }
 
 // TODO handle entries
-export function detectEntries(): Entry[] {
+export async function detectEntries(): Promise<Entry[]> {
   const glob = new Bun.Glob(`**/index.tsx`);
   const entries: Entry[] = [];
   for (const relPath of glob.scanSync(`src/app`)) {
     const tsxPath = path.join(`src/app`, relPath);
     const urlPath = relPath.replace(/index\.tsx$/, ``).replace(/\\/g, `/`);
+    const frontendPath = path.join(urlPath, `./frontend.tsx`);
+    const htmlOutPath = path.join(cachePath, urlPath, `index.html`);
     entries.push({
       tsxPath,
+      tsxText: await Bun.file(tsxPath).text(),
       urlPath,
+      frontendPath,
+      htmlOutPath,
     });
   }
   return entries;
 }
 
 async function readMetadata(entry: Entry): Promise<Metadata> {
-  let text = await Bun.file(entry.tsxPath).text();
-  text = text
+  let text = entry.tsxText
     // Convert single quotes to double quotes
     .replaceAll(/'|`/g, `"`)
     // Add quotes around unquoted keys
@@ -96,14 +105,18 @@ async function readMetadata(entry: Entry): Promise<Metadata> {
 
   const metadata = JSON.parse(text);
 
-  if (!metadata.title) error(`Matadata must contain "title"`);
-  if (!metadata.iconPath) error(`Matadata must contain "iconPath"`);
-  if (!metadata.description) error(`Matadata must contain "description"`);
+  if (typeof metadata.title !== `string`) error(`Matadata must contain "title"`);
+  if (typeof metadata.iconPath !== `string`) error(`Matadata must contain "iconPath"`);
+  if (typeof metadata.description !== `string`) error(`Matadata must contain "description"`);
 
   return metadata;
 }
 
 function error(msg: string): never {
-  console.error(`Error:`, msg);
+  console.error(`[error]`, msg);
   process.exit(1);
+}
+
+function log(...msgs: string[]) {
+  console.log(`[log]`, ...msgs);
 }

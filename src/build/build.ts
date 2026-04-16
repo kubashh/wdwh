@@ -5,7 +5,7 @@ import { cachePath, defaultConfig } from "../lib/consts";
 import { createFiles, detectEntries } from "../lib/util";
 
 export async function build() {
-  const entries = detectEntries();
+  const entries = await detectEntries();
   // await tsCheck(entries.map((e) => e.tsxPath));
 
   const start = performance.now();
