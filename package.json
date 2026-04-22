@@ -1,6 +1,6 @@
 {
   "name": "wdwh",
-  "version": "1.12.17-dev.0",
+  "version": "1.12.17",
   "author": "kubashh",
   "description": "The Bun Frontend Framework.",
   "license": "MIT",
@@ -36,10 +36,10 @@
     "bun-plugin-tailwind": "latest"
   },
   "devDependencies": {
-    "@types/bun": "^1.3.12",
+    "@types/bun": "^1.3.13",
     "@types/react": "^19.2.14",
-    "tailwindcss": "^4.2.2",
-    "typescript": "^6.0.2",
+    "tailwindcss": "^4.2.4",
+    "typescript": "^6.0.3",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"
   },

@@ -1,8 +1,9 @@
-import { cpSync, renameSync } from "fs";
+import { cpSync, renameSync, rmSync } from "fs";
 
 const files = [`wdwh.js`, `index.js`, `hooks.js`]; // `index.d.ts`, `hooks.d.ts`
 
 // Setup
+rmSync(`workspace/src`, { recursive: true, force: true });
 cpSync(`template/${process.argv.includes(`--template`) ? `template` : `test-template`}`, `workspace`, {
   recursive: true,
   force: true,

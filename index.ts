@@ -19,9 +19,9 @@ export type Signal<T> = {
   use(): T;
 };
 
-export function createSignal<T>(defaultValue: T): Signal<T> {
+export function createSignal<T>(defaultValue: T, fn?: Listener): Signal<T> {
   let value = defaultValue;
-  const listeners = new Set<Listener>();
+  const listeners = new Set<Listener>(fn ? [fn] : undefined);
 
   function get() {
     return value;
@@ -37,7 +37,7 @@ export function createSignal<T>(defaultValue: T): Signal<T> {
 
     set(newValueOrFn) {
       const newValue =
-        typeof newValueOrFn === "function" ? (newValueOrFn as (prev: T) => T)(value) : newValueOrFn;
+        typeof newValueOrFn === `function` ? (newValueOrFn as (prev: T) => T)(value) : newValueOrFn;
 
       if (Object.is(value, newValue)) return;
 
@@ -53,8 +53,8 @@ export function createSignal<T>(defaultValue: T): Signal<T> {
   };
 }
 
-export function useCreateSignal<T>(defaultValue: T): Signal<T> {
-  return useConst(createSignal(defaultValue));
+export function useCreateSignal<T>(defaultValue: T, fn?: Listener): Signal<T> {
+  return useConst(createSignal(defaultValue, fn));
 }
 
 export type ClassValue = ClassArray | string | number | null | boolean | undefined;
