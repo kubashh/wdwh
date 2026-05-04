@@ -9,4 +9,6 @@ dist
 /index.d.ts
 /hooks.js
 /hooks.d.ts
+/components.js
+/components.d.ts
 /wdwh.js

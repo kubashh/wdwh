@@ -13,6 +13,7 @@ await Promise.all([
   buildWithBun(`src/wdwh.ts`),
   ...buildWithDeclarations(`index.ts`),
   ...buildWithDeclarations(`hooks.ts`),
+  ...buildWithDeclarations(`components.tsx`),
 ]);
 
 // Publish
@@ -32,6 +33,8 @@ if (isClear) {
   rmSync(`index.d.ts`, rmOptions);
   rmSync(`hooks.js`);
   rmSync(`hooks.d.ts`, rmOptions);
+  rmSync(`components.js`);
+  rmSync(`components.d.ts`, rmOptions);
   rmSync(`wdwh.js`);
 }
 
@@ -51,6 +54,6 @@ function buildWithBun(name: string) {
     outdir: `.`,
     target: `bun`,
     minify: true,
-    external: [`react`, `bun-plugin-tailwind`, `path`, `typescript`],
+    external: [`react`, `bun-plugin-tailwind`, `path`, `typescript`, `.`, `./hooks`, `./components`],
   });
 }

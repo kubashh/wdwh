@@ -1,6 +1,6 @@
 {
   "name": "wdwh",
-  "version": "1.12.19",
+  "version": "1.12.20",
   "author": "kubashh",
   "description": "The Bun Frontend Framework.",
   "license": "MIT",
@@ -15,12 +15,12 @@
     "frontend"
   ],
   "files": [
-    "LICENSE",
-    "README.md",
     "index.js",
     "index.d.ts",
     "hooks.js",
     "hooks.d.ts",
+    "components.js",
+    "components.d.ts",
     "wdwh.js"
   ],
   "scripts": {
