@@ -1,6 +1,6 @@
 {
   "name": "wdwh",
-  "version": "1.12.17",
+  "version": "1.12.19",
   "author": "kubashh",
   "description": "The Bun Frontend Framework.",
   "license": "MIT",
@@ -24,8 +24,8 @@
     "wdwh.js"
   ],
   "scripts": {
-    "dev": "clear && bun dev/dev.ts",
-    "build": "bun dev/scripts.ts",
+    "dev": "clear && bun dev/dev.ts --wdwh-dev",
+    "build": "bun dev/scripts.ts --wdwh-dev",
     "pub": "bun dev/scripts.ts --publish",
     "zip": "rm -f template/template.zip && zip -r template/template.zip template/template"
   },

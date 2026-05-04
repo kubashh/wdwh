@@ -24,7 +24,7 @@ for (const file of files) {
 // Test build
 console.log(`Test build`);
 Bun.spawnSync({
-  cmd: [`bun`, `run`, `build`],
+  cmd: [`bun`, `run`, `build`, `--wdwh-dev`],
   stdio: [`inherit`, `inherit`, `inherit`],
   cwd: `workspace`,
 });
@@ -32,7 +32,7 @@ Bun.spawnSync({
 // Test dev
 console.log(`\nTest dev`);
 Bun.spawnSync({
-  cmd: [`bun`, `dev`],
+  cmd: [`bun`, `dev`, `--wdwh-dev`],
   stdio: [`inherit`, `inherit`, `inherit`],
   cwd: `workspace`,
 });

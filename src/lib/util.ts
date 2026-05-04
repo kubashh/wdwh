@@ -31,7 +31,7 @@ async function createEntryFiles(entry: Entry) {
 
   const buf = [
     `<!DOCTYPE html>`,
-    `<html lang="${htmlLang || `en`}>`,
+    `<html lang="${htmlLang || `en`}">`,
     `<head>`,
     `<meta charset="UTF-8" />`,
     `<meta name="viewport" content="width=device-width, initial-scale=1.0" />`,
@@ -118,5 +118,5 @@ function error(msg: string): never {
 }
 
 function log(...msgs: string[]) {
-  console.log(`[log]`, ...msgs);
+  process.argv.includes(`--wdwh-dev`) && console.log(`[log]`, ...msgs);
 }
