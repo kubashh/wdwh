@@ -1,4 +1,4 @@
-import { useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 import type { Signal } from ".";
 
 export function useRefresh() {
@@ -41,5 +41,5 @@ function setSearchParam(key: string, newValue: string) {
 }
 
 export function useSignal<T>(signal: Signal<T>): T {
-  return useSyncExternalStore(signal.subscribe, signal.get);
+  return signal.use();
 }

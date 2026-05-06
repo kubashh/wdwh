@@ -1,13 +1,17 @@
 import { cpSync, renameSync, rmSync } from "fs";
 
-const files = [`wdwh.js`, `index.js`, `hooks.js`, `components.ts`]; // `index.d.ts`, `hooks.d.ts`, `components.d.ts`
+const files = [`wdwh.js`, `index.js`, `hooks.js`, `components.js`]; // `index.d.ts`, `hooks.d.ts`, `components.d.ts`
 
 // Setup
 rmSync(`workspace/src`, { recursive: true, force: true });
-cpSync(`template/${process.argv.includes(`--template`) ? `template` : `test-template`}`, `workspace`, {
-  recursive: true,
-  force: true,
-});
+cpSync(
+  `template/template${process.argv.includes(`--t3`) ? `3` : process.argv.includes(`--t2`) ? `2` : ``}`,
+  `workspace`,
+  {
+    recursive: true,
+    force: true,
+  },
+);
 
 await Promise.all([
   Bun.spawn({

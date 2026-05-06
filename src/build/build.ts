@@ -61,8 +61,10 @@ export async function build() {
 
   // Print the results
   const end = performance.now();
-  if (process.argv.includes(`--dir`)) console.log(`See "${config.outdir}"`);
-  if (process.argv.includes(`--time`)) console.log(`Build in ${end - start}ms`);
+  if (process.argv.includes(`--info`)) {
+    console.log(`See "${config.outdir}"`);
+    console.log(`Build in ${end - start}ms`);
+  }
 }
 
 function minifyHtml(text: string) {

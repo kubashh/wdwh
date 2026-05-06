@@ -1,24 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { useConst } from "./hooks";
 
-type Listener = () => void;
-
-export type Metadata = {
-  title: string;
-  iconPath: string;
-  description: string;
-  author?: string;
-  htmlLang?: string;
-  [key: string]: string | undefined;
-};
-
-export type Signal<T> = {
-  get(): T;
-  set(newValueOrFn: T | ((prev: T) => T)): void;
-  subscribe(listener: Listener): () => void;
-  use(): T;
-};
-
 export function createSignal<T>(defaultValue: T, fn?: Listener): Signal<T> {
   let value = defaultValue;
   const listeners = new Set<Listener>(fn ? [fn] : undefined);
@@ -57,9 +39,6 @@ export function useCreateSignal<T>(defaultValue: T, fn?: Listener): Signal<T> {
   return useConst(createSignal(defaultValue, fn));
 }
 
-export type ClassValue = ClassArray | string | number | null | boolean | undefined;
-export type ClassArray = ClassValue[];
-
 export function clsx(...inputs: ClassValue[]) {
   let str = ``;
   for (const input of inputs) {
@@ -75,3 +54,24 @@ export function clsx(...inputs: ClassValue[]) {
 
   return str;
 }
+
+type Listener = () => void;
+
+export type Metadata = {
+  title: string;
+  iconPath: string;
+  description: string;
+  author?: string;
+  htmlLang?: string;
+  [key: string]: string | undefined;
+};
+
+export type Signal<T> = {
+  get(): T;
+  set(newValueOrFn: T | ((prev: T) => T)): void;
+  subscribe(listener: Listener): () => void;
+  use(): T;
+};
+
+export type ClassValue = ClassArray | string | number | null | boolean | undefined;
+export type ClassArray = ClassValue[];

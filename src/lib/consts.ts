@@ -27,7 +27,7 @@ export const files: Record<string, string> = {
 export const defaultConfig: Required<WdwhConfig> = {
   outdir: `dist`,
   hashFiles: true,
-  cleanPrev: false,
+  cleanPrev: true,
   tailwind: true,
   external: [],
 };

@@ -1,4 +1,5 @@
 import { rmSync } from "fs";
+import { build as esbuild } from "esbuild";
 
 // Config
 // publish => emit types (is slow with ts 5.x)
@@ -13,7 +14,16 @@ await Promise.all([
   buildWithBun(`src/wdwh.ts`),
   ...buildWithDeclarations(`index.ts`),
   ...buildWithDeclarations(`hooks.ts`),
-  ...buildWithDeclarations(`components.tsx`),
+  // Build to JSX
+  esbuild({
+    entryPoints: [`components.tsx`],
+    outfile: `components.js`,
+    jsx: `preserve`,
+    format: `esm`,
+    minify: true,
+  }),
+  // Types for JSX
+  buildDeclaration(`components.tsx`),
 ]);
 
 // Publish
@@ -40,12 +50,15 @@ if (isClear) {
 
 // Helper
 function buildWithDeclarations(name: string) {
-  return [
-    buildWithBun(name),
+  return [buildWithBun(name), buildDeclaration(name)];
+}
+
+function buildDeclaration(name: string) {
+  return (
     emitTypes &&
-      Bun.spawn([`tsc`, name, `--declaration`, `--emitDeclarationOnly`, `--outDir`, `.`, `--ignoreConfig`])
-        .exited,
-  ];
+    Bun.spawn([`tsc`, name, `--declaration`, `--emitDeclarationOnly`, `--outDir`, `.`, `--ignoreConfig`])
+      .exited
+  );
 }
 
 function buildWithBun(name: string) {

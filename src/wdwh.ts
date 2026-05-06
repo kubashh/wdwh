@@ -54,10 +54,9 @@ switch (process.argv[2]) {
   }
   default: {
     console.log(`Usage:
-wdwh dev
-wdwh build
-      --dir             # Print out dir
-      --time            # Print build time
+wdwh dev                # Start development
+wdwh build              # Build project to path specified in package.json, default "dist"
+      --info            # Print build info
 
 bunx wdwh@latest init   # Init new project in current directory
 
