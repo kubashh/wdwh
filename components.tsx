@@ -36,11 +36,19 @@ export function TextInput({ onChange, allow, ...props }: TextInputProps) {
 }
 
 // FileInput
-export function FileInput({ children, onFile, className, ...props }: FileInputProps) {
+export function FileInput({
+  children,
+  onFile,
+  className,
+  boxClassName,
+  style,
+  boxStyle,
+  ...props
+}: FileInputProps) {
   const id = useConst(props?.id || Math.random().toFixed(7));
   return (
-    <div>
-      <label htmlFor={id} className={className}>
+    <div className={boxClassName} style={boxStyle}>
+      <label htmlFor={id} className={className} style={style}>
         {children}
       </label>
       <input
@@ -71,4 +79,6 @@ type TextInputProps = {
 
 type FileInputProps = {
   onFile: (file: File) => void;
+  boxClassName?: string;
+  boxStyle?: React.CSSProperties;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, `type`>;
