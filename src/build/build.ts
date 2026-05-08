@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import plugin from "bun-plugin-tailwind";
 import { cachePath, defaultConfig } from "../lib/consts";
 import { createFiles, detectEntries } from "../lib/util";
 
@@ -25,7 +24,7 @@ export async function build() {
   const buildConfig: Bun.BuildConfig = {
     entrypoints,
     outdir: config.outdir,
-    plugins: config.tailwind ? [plugin] : undefined,
+    plugins: config.tailwind ? [(await import("bun-plugin-tailwind")).default] : undefined,
     minify: true,
     target: `browser`,
     external: config.external,
