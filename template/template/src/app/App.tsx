@@ -2,7 +2,7 @@ import { createSignal } from "wdwh";
 import { useSearchParam } from "wdwh/hooks";
 import { Button } from "wdwh/components";
 
-// See wdwh, wdwh/hooks
+// See wdwh, wdwh/hooks, wdwh/components
 
 const countSignal = createSignal(0);
 // countSignal.use() is same that useSignal(countSignal)
@@ -27,7 +27,7 @@ export default function App() {
       </div>
 
       <div>
-        <h2 className="mb-4 text-2xl">Test signal (wdwh/signal)</h2>
+        <h2 className="mb-4 text-2xl">Test signal (wdwh)</h2>
         <div className="m-4 flex gap-8">
           <LocalButton label="Reset" onClick={() => countSignal.set(0)} />
           <Counter />
