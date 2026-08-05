@@ -2,9 +2,11 @@
 
 - build: static pages exporter (2.0.0)
 - dev: multi page development
+- add support for index.html
 - api wdwh/hooks: useUrl hook
-- build: comptime function
+- build: comptime function (with import "fs" and global Bun object)
 - build: make import path of `App.tsx` independent (See 1.13.0 below)
+- build: make import css independent of static css path
 - runtime: inline signals & signals optymalizations
 - hydrateRoot instead of create root
 

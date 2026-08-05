@@ -32,7 +32,7 @@ switch (process.argv[2]) {
         : [`unzip`, `-o`, zipPath, `-d`, `.`]; // Linux / macOS: use system unzip
     Bun.spawnSync(cmd);
 
-    // Copy in not exist
+    // Copy if directory is empty
     const glob = new Bun.Glob(`**/*`);
     for (const relPath of glob.scanSync(`template/template`)) {
       if (!existsSync(relPath)) {
@@ -58,7 +58,7 @@ wdwh dev                # Start development
 wdwh build              # Build project to path specified in package.json, default "dist"
       --info            # Print build info
 
-bunx wdwh@latest init   # Init new project in current directory
+bun x wdwh@latest init   # Init new project in current directory
 
 wrong command: "${process.argv.at(2)}"`);
     process.exit(1);

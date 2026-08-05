@@ -2,12 +2,32 @@ import path from "path";
 import { cachePath, files } from "./consts";
 import type { Metadata } from "../..";
 
-export async function createFiles(entries: Entry[]) {
-  // generate cache files for each detected entry
-  const promises: Promise<void>[] = [];
-  for (const entry of entries) {
-    promises.push(createEntryFiles(entry));
+export async function handleEntries(): Promise<Entry[]> {
+  // TODO handle .html files too `**/index.{tsx,html}`
+  const glob = new Bun.Glob(`**/index.tsx`);
+  const entries: Entry[] = [];
+  for (const relPath of glob.scanSync(`src/app`)) {
+    const tsxPath = path.join(`src/app`, relPath);
+    const urlPath = relPath.replace(/index\.tsx$/, ``).replace(/\\/g, `/`);
+    const frontendPath = path.join(urlPath, `./frontend.tsx`);
+    const htmlOutPath = path.join(cachePath, urlPath, `index.html`);
+    entries.push({
+      tsxPath,
+      tsxText: await Bun.file(tsxPath).text(),
+      urlPath,
+      frontendPath,
+      htmlOutPath,
+    });
   }
+
+  await createFiles(entries);
+
+  return entries;
+}
+
+// generate cache files for each detected entry
+async function createFiles(entries: Entry[]) {
+  const promises = entries.map((entry) => createEntryFiles(entry));
   await Promise.all(promises);
 }
 
@@ -48,48 +68,6 @@ async function createEntryFiles(entry: Entry) {
   await Bun.write(entry.htmlOutPath, buf.join(`\n`));
 }
 
-function getBodyPropsFromIndexTSX(entry: Entry) {
-  const body = getHtmlElement(entry.tsxText, `body`).replaceAll(`className`, `class`);
-
-  const bodyStart = body.indexOf(`>`) + 1;
-  const bodyEnd = body.lastIndexOf(`<`);
-
-  return body.replace(body.slice(bodyStart, bodyEnd), ``);
-}
-
-function getHtmlElement(text: string, name: string) {
-  for (let sliceStart, sliceEnd = text.indexOf(`export default`); ; sliceEnd++) {
-    if (!sliceStart && text.startsWith(`<${name}`, sliceEnd)) sliceStart = sliceEnd;
-    if (sliceStart && text.startsWith(`</${name}>`, sliceEnd)) {
-      return text
-        .slice(sliceStart, sliceEnd + name.length + 3)
-        .replaceAll(`\n`, ` `)
-        .replaceAll(/\s{2,}/g, ` `)
-        .trim();
-    }
-  }
-}
-
-// TODO handle entries
-export async function detectEntries(): Promise<Entry[]> {
-  const glob = new Bun.Glob(`**/index.tsx`);
-  const entries: Entry[] = [];
-  for (const relPath of glob.scanSync(`src/app`)) {
-    const tsxPath = path.join(`src/app`, relPath);
-    const urlPath = relPath.replace(/index\.tsx$/, ``).replace(/\\/g, `/`);
-    const frontendPath = path.join(urlPath, `./frontend.tsx`);
-    const htmlOutPath = path.join(cachePath, urlPath, `index.html`);
-    entries.push({
-      tsxPath,
-      tsxText: await Bun.file(tsxPath).text(),
-      urlPath,
-      frontendPath,
-      htmlOutPath,
-    });
-  }
-  return entries;
-}
-
 async function readMetadata(entry: Entry): Promise<Metadata> {
   let text = entry.tsxText
     // Convert single quotes to double quotes
@@ -110,6 +88,28 @@ async function readMetadata(entry: Entry): Promise<Metadata> {
   if (typeof metadata.description !== `string`) error(`Matadata must contain "description"`);
 
   return metadata;
+}
+
+function getBodyPropsFromIndexTSX(entry: Entry) {
+  const body = getHtmlElement(entry.tsxText, `body`).replaceAll(`className`, `class`);
+
+  const bodyStart = body.indexOf(`>`) + 1;
+  const bodyEnd = body.lastIndexOf(`<`);
+
+  return body.replace(body.slice(bodyStart, bodyEnd), ``);
+}
+
+function getHtmlElement(text: string, name: string) {
+  for (let sliceStart, sliceEnd = text.indexOf(`export default`); ; sliceEnd++) {
+    if (!sliceStart && text.startsWith(`<${name}`, sliceEnd)) sliceStart = sliceEnd;
+    if (sliceStart && text.startsWith(`</${name}>`, sliceEnd)) {
+      return text
+        .slice(sliceStart, sliceEnd + name.length + 3)
+        .replaceAll(`\n`, ` `)
+        .replaceAll(/\s{2,}/g, ` `)
+        .trim();
+    }
+  }
 }
 
 function error(msg: string): never {

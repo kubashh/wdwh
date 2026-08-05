@@ -1,13 +1,10 @@
 import { bunfigText } from "./lib/consts";
-import { createFiles, detectEntries } from "./lib/util";
+import { handleEntries } from "./lib/util";
 
 export async function dev() {
-  const entries = await detectEntries();
-
-  await createFiles(entries);
+  await handleEntries();
 
   // Handle bunfig
-
   // TODO fix bunfig existence
 
   const bunfigFile = Bun.file(`./bunfig.toml`);
@@ -34,18 +31,7 @@ export async function dev() {
     setTimeout(deleteBunfig, 250);
     await respawnIgnoreExit();
   }
-  // console.log(`Exists of bunfig...`);
 
-  // function onExit() {
-  //   console.log(`Exit`);
-  // }
-
-  // // process.on(`beforeExit`, onExit);
-  // // process.on(`exit`, onExit);
-  // // process.on(`SIGTERM`, onExit);
-  // process.on(`SIGINT`, onExit);
-
-  // Need be spawn (no spawnSync) because of ipc
   Bun.spawnSync({
     cmd: [`bun`, `node_modules/.cache/wdwh/server.ts`],
     stdio: [`ignore`, `inherit`, `inherit`],
@@ -54,7 +40,7 @@ export async function dev() {
 
 async function respawnIgnoreExit() {
   try {
-    await Bun.$`bunx wdwh dev`;
+    await Bun.$`bun x wdwh dev`;
   } catch {}
   process.exit();
 }
