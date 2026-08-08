@@ -40,14 +40,34 @@ async function createEntryFiles(entry: Entry) {
   // index.html
   log(`Creating index.html...`); // TMP
   const body = getBodyPropsFromIndexTSX(entry);
-  const { title, iconPath, htmlLang, ...rest } = await readMetadata(entry);
+  const { title, iconPath, bundleIcon, htmlLang, ...rest } = await readMetadata(entry);
 
+  let iconElement: string = ``;
   const iconRealPath = path.join(
     `../`.repeat(entry.urlPath.split(`/`).length + 2),
     `src/app`,
     entry.urlPath,
     iconPath,
   );
+
+  if (bundleIcon !== `true`) {
+    iconElement = `<link rel="icon" href="${iconRealPath}" />`;
+  } else {
+    const ppp = path.join(process.cwd(), `src/app`, iconPath);
+    const file = Bun.file(ppp);
+    const buf = await file.bytes();
+    const base64 = buf.toBase64();
+
+    const lower = iconPath.toLowerCase();
+    let mime = `application/octet-stream`;
+    if (lower.endsWith(`.ico`)) mime = `image/x-icon`;
+    else if (lower.endsWith(`.png`)) mime = `image/png`;
+    else if (lower.endsWith(`.jpg`) || lower.endsWith(`.jpeg`)) mime = `image/jpeg`;
+    else if (lower.endsWith(`.webp`)) mime = `image/webp`;
+    else if (lower.endsWith(`.svg`)) mime = `image/svg+xml`;
+
+    iconElement = `<link rel="icon" href="data:${mime};base64,${base64}" />`;
+  }
 
   const buf = [
     `<!DOCTYPE html>`,
@@ -56,7 +76,7 @@ async function createEntryFiles(entry: Entry) {
     `<meta charset="UTF-8" />`,
     `<meta name="viewport" content="width=device-width, initial-scale=1.0" />`,
     `<title>${title}</title>`,
-    `<link rel="icon" href="${iconRealPath}" />`,
+    iconElement,
     // if page author included title/meta/link tags they will appear here
     ...Object.entries(rest).map(([key, value]) => `<meta name="${key}" content="${value}" />`),
     `<script src="${entry.frontendPath}"></script>`,
@@ -70,18 +90,14 @@ async function createEntryFiles(entry: Entry) {
 
 async function readMetadata(entry: Entry): Promise<Metadata> {
   let text = entry.tsxText
-    // Convert single quotes to double quotes
-    .replaceAll(/'|`/g, `"`)
-    // Add quotes around unquoted keys
-    .replaceAll(/([{,]\s*)([a-zA-Z0-9_]+)\s*:/g, `$1"$2":`)
-    // Temove trailing comma
-    .replace(/,\s*([}\]])/g, `$1`);
+    // Convert string template quotes
+    .replaceAll("`", `"`);
 
   const start = text.indexOf(`{`, text.indexOf(`export const metadata`));
   const end = text.indexOf(`}`, start) + 1;
   text = text.slice(start, end);
 
-  const metadata = JSON.parse(text);
+  const metadata: any = Bun.JSON5.parse(text);
 
   if (typeof metadata.title !== `string`) error(`Matadata must contain "title"`);
   if (typeof metadata.iconPath !== `string`) error(`Matadata must contain "iconPath"`);

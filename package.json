@@ -1,6 +1,6 @@
 {
   "name": "wdwh",
-  "version": "1.12.24",
+  "version": "1.12.25",
   "author": "kubashh",
   "description": "The Bun Frontend Framework.",
   "license": "MIT",
@@ -43,6 +43,6 @@
     "typescript": "^7.0.2"
   },
   "prettier": {
-    "printWidth": 108
+    "printWidth": 100
   }
 }

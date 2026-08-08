@@ -60,6 +60,7 @@ type Listener = () => void;
 export type Metadata = {
   title: string;
   iconPath: string;
+  bundleIcon?: `true` | `false`;
   description: string;
   author?: string;
   htmlLang?: string;

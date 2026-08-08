@@ -10,8 +10,10 @@ const cssPath = `../../../src/app/global.css`;
 export const cachePath = `./node_modules/.cache/wdwh`;
 
 export const files: Record<string, string> = {
-  [`${cachePath}/frontend.tsx`]: frontendText.replace(`CSS_PATH`, cssPath).replace(`APP_PATH`, appPath),
-  [`${cachePath}/server.ts`]: serverText,
+  [`${cachePath}/frontend.tsx`]: minifyJs(
+    frontendText.replace(`CSS_PATH`, cssPath).replace(`APP_PATH`, appPath),
+  ),
+  [`${cachePath}/server.ts`]: minifyJs(serverText),
 };
 
 // if AST works make types numbers instead of strings
@@ -33,3 +35,14 @@ export const defaultConfig: Required<WdwhConfig> = {
 };
 
 export { bunfigText };
+
+function minifyJs(code: string) {
+  return code
+    .replaceAll(/\/\*[\s\S]*?\*\//g, ``) // block comments
+    .replaceAll(/\/\/.*$/gm, ``) // line comments
+    .replaceAll(/\s+/g, ` `) // collapse whitespace
+    .replaceAll(/\s*([{};,:()=])\s*/g, `$1`) // trim around some punctuation
+    .replaceAll(`from "`, `from"`)
+    .replaceAll(` />`, `/>`)
+    .trim();
+}
